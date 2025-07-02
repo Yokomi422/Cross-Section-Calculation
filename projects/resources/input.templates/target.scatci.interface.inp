@@ -1,0 +1,6 @@
+&outer_interface
+  write_amp = .false.,    ! do not extract R-matrix amplitudes and channel information
+  write_dip = .true.,   ! write all-to-all transition dipoles between eigenstates
+  lupropw = >>>LUPROPW<<<,       ! output unit for extracted properties
+  isw = >>>ISW<<<,        ! evaluate full (= 0) or electronic only (= 1) dipoles
+/

@@ -1,0 +1,18 @@
+&state
+  sname = '>>>MOLECULE<<< - >>>SPIN<<< >>>SYMMETRY<<<',
+  megul = >>>MEGUL<<<, ! unit to which output is saved
+  iscat = >>>ISCAT<<<,  ! no phase correction necessary for target
+  iposit = >>>IPOSIT<<<, ! positron flag - 0 for electron, -1 for positron
+  symtyp = >>>SYMTYP<<<, ! D2h, C2v, etc. are of sym. type 2
+  qntot  = >>>QNTOT<<<, ! triplet of numbers, e.g. 1,0,0 means 1 = Singlet, 0 = A1, etc
+  nelect = >>>NELECT<<<, ! number of electrons
+  nob  = >>>NOB<<<, ! total number of orbitals for each symmetry
+>>>POSITRON_FLAG<<<  nobe = >>>NOBE<<<, ! number of electron orbitals for each symmetry
+>>>POSITRON_FLAG<<<  nobp = >>>NOBP<<<, ! number of positron orbitals for each symmetry
+>>>POSITRON_FLAG<<<  nobv = >>>NOBV<<<, ! number of valent orbitals for each symmetry
+  nob0 = >>>NOB0<<<, ! number of target orbitals for each symmetry
+  nrefo = >>>NREFO<<<, ! Number of quintets in reforb
+  reforb = >>>REFORB<<<, ! reference determinant
+  lndo = >>>LNDO<<<, ! memory control
+  gflag = >>>GFLAG<<<, ! flag to group CSFs based on symmetry (1=on default)
+/

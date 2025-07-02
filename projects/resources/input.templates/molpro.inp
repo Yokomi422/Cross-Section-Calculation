@@ -1,0 +1,54 @@
+***,>>>MOLECULE<<< with >>>BASISNAME<<< basis
+Gprint,basis;                                 ! Print basis information
+Gprint,civector;                              ! Print CI vector in MCSCF
+Gprint,orbital;                               ! Print orbitals in SCF and MCSCF
+>>>ANGSTROM<<<
+>>>SYMOP<<<
+basis={
+>>>BASIS<<<
+}
+geometry={
+>>>GEOMETRY<<<
+}
+
+method = '>>>METHOD<<<'  ! set to HF or CASSCF in scripts
+
+IF (method.eq.'HF') THEN
+
+{hf;
+>>>HFWF<<<
+orbprint,1000;
+}
+
+ELSE
+
+{hf;
+>>>HFWF<<<
+orbprint,-1;
+}
+
+! First CASSCF run only for target states for which orbitals should be optimised
+{multi;
+closed,>>>CLOSED<<<;
+occ,>>>OCC<<<;
+>>>CASWF<<<
+natorb,print=1000;
+}
+
+! Second CASSCF run for all target states without orbital optimalisation
+!{multi;
+!closed,>>>CLOSED<<<;
+!occ,>>>OCC<<<;
+!>>>ALLWF<<<
+!dont,orbital;
+!dm;
+!}
+
+! Saving density matrix for radden
+!{matrop; 
+!load,dm,den,2140.2;
+!write,dm;}								!save,dm,2140.2,DENSITY;} 
+
+ENDIF
+
+put,molden,>>>MOLECULE<<<.molden;

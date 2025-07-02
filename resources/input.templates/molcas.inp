@@ -1,0 +1,27 @@
+&GATEWAY
+coord
+>>>NATOMS<<<
+>>>UNIT<<<
+>>>GEOMETRY<<<
+group= >>>SYMOP<<<
+basis= >>>BASISNAME<<<
+&SEWARD
+&SCF
+charge= >>>CHARGE<<<
+
+>> export method = '>>>METHOD<<<'
+>> IF ($method NE 'HF')
+
+&RASSCF
+symmetry= >>>IRREP<<<
+spin= >>>SPIN<<<
+ciroot= >>>CIROOT<<< 
+nactel= >>>NACTEL<<<
+frozen
+>>>FROZEN<<<
+inactive
+>>>INACTIVE<<<
+gasscf
+>>>GASSCF<<<
+
+>> ENDIF

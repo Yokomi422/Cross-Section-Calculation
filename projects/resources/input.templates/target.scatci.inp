@@ -1,0 +1,13 @@
+&input
+  megul = >>>MEGUL<<<, ! input from module CONGEN
+  nfte = >>>NFTE<<<, ! Hamiltonian scratch file
+/
+&cinorn
+  name = '>>>MOLECULE<<< CI calculation - >>>SPIN<<< >>>SYMMETRY<<<',
+  nstat = >>>NSTAT<<<, ! number of CI eigenvalues
+  nftw = >>>LUCITGT<<<,
+  nciset = >>>NCISET<<<, ! index of calculated CI vectors within output file (0 = automatic indexing, but first must be 1)
+>>>MPI_SCATCI<<<  vecstore = >>>VECSTORE<<<,
+>>>MPI_SCATCI<<<  memp = 2.5,
+>>>IGHT<<<igh = >>>IGH<<<,
+/

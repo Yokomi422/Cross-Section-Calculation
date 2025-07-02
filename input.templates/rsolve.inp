@@ -1,0 +1,33 @@
+&rslvin                   ! used by R_SOLVE (see docs/rsolve)
+  name = '>>>MOLECULE<<< - >>>SPIN<<< >>>SYMMETRY<<< - K-matrices',
+  mgvn = >>>MGVN<<<,               ! symmetry
+  stot = >>>STOT<<<,               ! spin multiplicity 2*S+1
+  newbut = 0,             ! Buttle correction - 0 in polyatomic codes
+
+  nerang = >>>NERANG<<<,          ! number of energy subranges
+  nescat = >>>NESCAT<<<,          ! number of input scattering energies in each subrange
+  einc = >>>EINC<<<,     ! scattering energies - initial energy, energy increment, there can be more subranges
+  ieunit = >>>IEUNIT<<<,             ! energy unit - 1 = Ryd, 2 = eV
+
+  luchan = >>>LUCHAN<<<,            ! channel information unit number
+  icform = >>>ICFORM<<<,           ! format of the channel information file
+  nchset = >>>NCHSET<<<,  ! index of the dataset in channel information file
+
+  lurmt  = >>>LURMT<<<,            ! boundary amplitudes unit number
+  irform = >>>IRFORM<<<,           ! format of the boundary amplitudes file
+  nrmset = >>>NRMSET<<<,  ! index of the dataset in boundary amplitudes file
+
+  lukmt = >>>LUKMT<<<,    ! K-matrix unit number
+  ikform = >>>IKFORM<<<,           ! formatted/unformatted switch for the K-matrix file
+  iktype = 0,             ! open-open (= 0) of full (= 1) K-matrix files to calculate
+
+  calcdip   = >>>CALCDIP<<<,1,>>>MAXF<<<,   ! do calculate dipoles for given range of ionic states
+  form_pw_dipoles = 'FORMATTED',    ! format of the partial wave dipole file
+  lu_pw_dipoles = >>>LU_PW_DIPOLES<<<,  ! output partial wave dipoles file unit number
+  lu_inner_dipoles = >>>LU_INNER_DIPOLES<<<,    ! input inner dipoles file unit
+/
+
+&bprop                    ! read by subroutine ASYM1 called from R_SOLVE (see docs/rprop-cfasym)
+  raf = >>>RAF<<<,             ! radius at which continued fraction method can be used
+  igail = >>>IGAIL<<<,            ! propagate (= 1) or just match Coulomb functions (= 2) in outer region
+/

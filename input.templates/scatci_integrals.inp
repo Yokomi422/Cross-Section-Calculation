@@ -1,0 +1,27 @@
+&target_data
+  a = >>>RMATR<<<, !radius of R-matrix sphere
+  no_sym_op = >>>NSYMOP<<<,
+  sym_op = >>>SYMOP<<<,
+  molden_file = './>>>MOLECULE<<<.molden'
+  nob = >>>NOB<<<,
+  select_orbitals_by = >>>SELECT_ORB_BY<<<,
+/
+>>>PCO_BASIS<<<
+&continuum_data
+  run_free_scattering = >>>RUN_FREE_SCATTERING<<<, max_energy = 3.0, nE = 300,
+
+  del_thrs = >>>DELTHRES<<<, ! deletion threshold
+
+  >>>GTO_BASIS<<<
+
+  >>>BTO_BASIS<<<
+/
+&process_control
+  max_ijrs_size = >>>BUFFER_SIZE<<<
+  mixed_ints_method = 1      ! Applicable only when using B-spline continuum. Always use mixed_ints_method = 1
+  max_l_legendre_1el = >>>MAXL_LEGENDRE_1EL<<<   !Applicable only when using B-spline continuum. Maximum L to use in Legendre expansion for Nuclear attraction integrals.
+  max_l_legendre_2el = >>>MAXL_LEGENDRE_2EL<<<   !Applicable only when using B-spline continuum. Maximum L to use in Legendre expansion for 2-electron integrals.
+  calc_radial_densities = .false.
+  delta_r1 = >>>DELTAR1<<<
+  molecular_2el_algorithm = >>>INTEGRAL_TRANS_ALG<<<
+/

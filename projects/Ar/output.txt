@@ -1,0 +1,206 @@
+Current working directory: /home/pj25000080/ku50001398/ukrmol+/projects/Ar
+
+Running UK R-matrix codes for e + Ar
+Target charge q = 0
+  the continuum basis swmol3.continuum.q0.r13.L6 will be loaded.
+
+Output in /home/pj25000080/ku50001398/ukrmol+/projects/Ar/sample_output/Ar/cc-pVTZ.CAS.e-.5frozen.4active.5virtual.2states.r13.C1.Ar_atom
+
+Symmetry C1 with 1 IRs for all geometries.
+
+Checking user settings given in model.pl ...
+  ... done.
+Number of geometries to run: 1
+
+Starting main loop over geometries.
+Logging continues into files corresponding to each geometry.
+
+Geometry #1:
+===========
+
+Target calculations:
+
+Running molpro ...
+Reading molpro output ...
+Looking for NATURAL ORBITALS in MOLPRO output...
+  Found NATURAL ORBITALS...
+  Occupancy and energy of the first 10 molecular orbitals: in X.Y  X stands for IR and Y counts MOs
+    1.1    2.000000    -118.6093
+    1.2    2.000000    -12.3210
+    1.3    2.000000    -9.5699
+    1.4    2.000000    -9.5699
+    1.5    2.000000    -9.5699
+    1.6    2.000000    -1.2765
+    1.7    2.000000    -0.5901
+    1.8    2.000000    -0.5901
+    1.9    2.000000    -0.5901
+    1.10    0.000000    0.5502
+    1.11    0.000000    0.5502
+  Frozen orbitals: 5
+  Active orbitals: 4
+  Target  orbitals: 9
+  Virtual orbitals: 5
+  Used    orbitals: 14
+  Reference orbitals: 9
+ ... done.
+Running scatci_integrals ...
+ Smallest positive magnitude:   2.2250738585072014E-308
+ Largest magnitude:   1.7976931348623157E+308
+ Smallest relative spacing:   1.1102230246251565E-016
+ Largest relative spacing:   2.2204460492503131E-016
+ Log10(Base)  0.30102999566398120     
+ Decimal precision for real(kind=cfp):          15
+ Number of bits in default integer:          32
+Running command "mv log_file.0 ./target.scatci_integrals.out" ...
+Running command "rm inp" ...
+Reading scatci_integrals output ...
+Final number of orbitals for target: 14, 
+Final number of orbitals for PCOs: 0, 
+Final number of orbitals for TGT+PCOs: 14, 
+Final number of orbitals for continuum: 151, 
+Number of molecular orbitals in each irreducible representation: 165, 
+  Cont used orbitals: 151
+  All  used orbitals: 165
+ ... done.
+=========== parameters before scatci_integrals ===========
+===========================================================
+Target MAS:
+Method: ORMAS
+Space 0: [5,0,0,0,0,0,0,0], [10,10], closed
+Space 1: [4,0,0,0,0,0,0,0], [8,8], active
+L^2 MAS:
+Method: ORMAS
+Space 0: [5,0,0,0,0,0,0,0], [10,10], closed
+Space 1: [4,0,0,0,0,0,0,0], [8,8], active
+Space 2: [5,0,0,0,0,0,0,0], [0,1], active
+
+Searching for reference orbitals for singlet A state.
+Putting 18 electrons into (9) orbitals
+Reference orbitals found:
+0,1,18,0,0
+
+Running congen for singlet A ...
+Reading congen output ...
+  Total number of CSF's generated is 1
+.
+ ... done.
+Running scatci for singlet A ...
+Reading scatci output ...
+:
+  1.0.1 -> -526.8131319711
+ ... done.
+
+MAS Analysis: Comparison of qchem and target states:
+  Energy difference = target energy - qchem energy
+   ---------------------------------------------------
+    State  Spin.Sym  Energy diff.  No. CSFs  No. CSFs
+     No.                 (Ha)       (qchem)  (target)
+   ---------------------------------------------------
+       1      1.0    0.000000e+00         0         1
+   ---------------------------------------------------
+  Max. energy difference: 0.000000e+00 for state 0
+
+  Warning: There is less target states (1) in scatci output(s) than required (2) !!!
+           Increase numbers of states in settings->ntarget_states.
+           Only those states which were found will be used !
+Running denprop ...
+Reading denprop output ...
+  Target states:
+    No. 1 - Singlet(1)  A(0)  -0.526813131971D+03
+  Dipole moment (in a.u.) of the ground state:
+   z component: 0.0000000000
+   x component: 0.0000000000
+   y component: 
+ ... done.
+Running command "cp fort.24 prop.out" ...
+
+Scattering calculations with CAS model:
+
+
+Searching for reference orbitals for doublet A state.
+Putting 19 electrons into (9) orbitals
+Reference orbitals found:
+0,1,18,0,0, 0,10,1,0,0
+
+Running congen for doublet A ...
+Reading congen output ...
+  Total number of CSF's generated is 7
+.
+ ... done.
+Running scatci for doublet A ...
+Reading scatci output ...
+, printing first 10 energies:
+  2.0.1 -> -526.8037402120
+  2.0.2 -> -526.7901011277
+  2.0.3 -> -526.7901011277
+  2.0.4 -> -526.7901011277
+  2.0.5 -> -526.7689179817
+  2.0.6 -> -526.7689095568
+  2.0.7 -> -526.7689095568
+  2.0.8 -> -526.7689095568
+  2.0.9 -> -526.7689095568
+  2.0.10 -> -526.7399528069
+LCONT = 0
+ ... done.
+Running swinterf for doublet A ...
+Running rsolve for doublet A ...
+Running eigenp for doublet A ...
+Running tmatrx for doublet A ...
+Running ixsecs for doublet A ...
+Running reson for doublet A ...
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+Execution of "/home/pj25000080/ku50001398/ukrmol+/ukrmol-out-3.2/build/bin/reson < /home/pj25000080/ku50001398/ukrmol+/projects/Ar/sample_output/Ar/cc-pVTZ.CAS.e-.5frozen.4active.5virtual.2states.r13.C1.Ar_atom/geom1/./scattering.reson.doublet.A.inp 1> /home/pj25000080/ku50001398/ukrmol+/projects/Ar/sample_output/Ar/cc-pVTZ.CAS.e-.5frozen.4active.5virtual.2states.r13.C1.Ar_atom/geom1/./scattering.reson.doublet.A.out 2> /home/pj25000080/ku50001398/ukrmol+/projects/Ar/sample_output/Ar/cc-pVTZ.CAS.e-.5frozen.4active.5virtual.2states.r13.C1.Ar_atom/geom1/./scattering.reson.doublet.A.err" failed
+Error output follows:
+--------------------------------------------------------------------------------
+munmap_chunk(): invalid pointer
+
+Program received signal SIGABRT: Process abort signal.
+
+Backtrace for this error:
+#0  0x7f8773666171 in ???
+#1  0x7f8773665313 in ???
+#2  0x7f87726a75af in ???
+#3  0x7f87726a752f in ???
+#4  0x7f877267ae64 in ???
+#5  0x7f87726e8806 in ???
+#6  0x7f87726efb0b in ???
+#7  0x7f87726eff2b in ???
+#8  0x412f34 in ???
+#9  0x402ea0 in ???
+#10  0x7f87726937e4 in ???
+#11  0x402efd in ???
+#12  0xffffffffffffffff in ???
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+Reading reson output ...
+  Resonance position: 0.37014050E+00 Ryd
+  Resonance width:    0.24525243E-01 Ryd
+ ... done.
+Running command "cp fort.1020 ../eigenph.doublet.A" ...
+Running command "cp fort.1220 ../xsec.doublet.A" ...
+
+Start of collecting data for all geometries ...
+Skipping running scatci.
+Reading scatci output ...
+:
+  1.0.1 -> -526.8131319711
+ ... done.
+Skipping running scatci.
+Reading scatci output ...
+, printing first 10 energies:
+  2.0.1 -> -526.8037402120
+  2.0.2 -> -526.7901011277
+  2.0.3 -> -526.7901011277
+  2.0.4 -> -526.7901011277
+  2.0.5 -> -526.7689179817
+  2.0.6 -> -526.7689095568
+  2.0.7 -> -526.7689095568
+  2.0.8 -> -526.7689095568
+  2.0.9 -> -526.7689095568
+  2.0.10 -> -526.7399528069
+LCONT = 0
+ ... done.
+Skipping running reson.
+Reading reson output ...
+  Resonance position: 0.37014050E+00 Ryd
+  Resonance width:    0.24525243E-01 Ryd
+ ... done.

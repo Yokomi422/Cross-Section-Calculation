@@ -1,0 +1,11 @@
+&outer_interface
+  write_amp = .true.,     ! extract R-matrix amplitudes and channel information
+  write_dip = .false.,    ! write all-to-all transition dipoles between inner eigenstates
+  write_rmt = >>>WRITE_RMT<<<,  ! write "molecular_data" file useful for RMT/multi-photon calculations
+  nfdm = 18,              ! RMT: evaluate inner boundary at so many radii (in addition to the sphere surface)
+  delta_r = 0.08,         ! RMT: radius spacing for evaluation
+  rmatr = >>>RMATR<<<,    ! R-matrix radius
+  cform = >>>ICFORM<<<,   ! format switch for LUCHAN = 10 (channel information)
+  rform = >>>IRFORM<<<,   ! format switch for LURMT = 21 (boundary amplitudes)
+  isw = >>>ISW<<<,        ! evaluate full (= 0) or electronic only (= 1) dipoles
+/

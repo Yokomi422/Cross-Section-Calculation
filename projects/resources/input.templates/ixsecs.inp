@@ -1,0 +1,13 @@
+&xsecin                   ! used by I_XSECS (see docs/ixsecs)
+  name = '>>>MOLECULE<<< - >>>SPIN<<< >>>SYMMETRY<<<',
+  ieunit = >>>IEUNIT<<<,             ! energy unit - 1 = Ryd, 2 = eV
+  ixsn = >>>IXSN<<<,               ! cross-section unit - 1 = bohr**2, 2 = angstrom**2, 3 = pi*bohr**2
+  maxi = >>>MAXI<<<,               ! the highest initial state for which cross sections are required
+  maxf = >>>MAXF<<<,               ! the highest final state for which cross sections are required
+  luchan = >>>LUCHAN<<<,            ! channel information unit number
+  nchset = >>>NCHSET<<<,  ! index of the dataset in channel information file
+  icform = >>>ICFORM<<<,           ! format of the channel information file
+  lutmt = >>>LUTMT<<<,     ! file with T-matrices
+  itform = >>>ITFORM<<<,  ! formatted/unformatted switch for unit LUTMT = 12 (T-matrix)
+  luxsn = >>>LUXSN<<<,            ! formatted cross sections
+/

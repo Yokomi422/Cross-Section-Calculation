@@ -1,0 +1,19 @@
+&swintfin                 ! used by SW_INTERF (see docs/swinterf)
+  name = '>>>MOLECULE<<< - >>>SPIN<<< >>>SYMMETRY<<<',
+  mgvn = >>>MGVN<<<,               ! symmetry, 0 = A1, as in CONGEN
+  stot = >>>STOT<<<,               ! spin multiplicity 2*S+1
+  ntarg = >>>NTARG<<<,              ! number of target states
+  idtarg = >>>IDTARG<<<,              ! mapping of target states from order by target congen inputs to energy order as in unit LUTARG = 24 (output of denprop)
+  nvo = >>>NVO<<<,     !  number of virtual orbitals contracted with the continuum per target state in energy order.
+  rmatr = >>>RMATR<<<,           ! R-matrix radius
+  ismax = >>>ISMAX<<<,              ! maximum multipole to be retained in expansion of long range potentials
+  iposit = >>>IPOSIT<<<,            ! positron flag - 0 for electron, -1 for positron
+>>>USE_LCONT<<<  last_coeff_saved = >>>LCONT<<<,      ! subset of coefficients stored in fort.25 (often restricted to continuum ones)
+  !ecutoff = >>>ECUTOFF<<<,             ! energy (Hartree) cut-off to drop target states in the outer region
+  luamp = >>>LUAMP<<<,
+  luci = >>>LUCI<<<,
+  luchan = >>>LUCHAN<<<,
+  lurmt = >>>LURMT<<<,
+  icform = >>>ICFORM<<<,
+  irform = >>>IRFORM<<<,
+/

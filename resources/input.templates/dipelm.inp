@@ -1,0 +1,19 @@
+&dipelminp
+  ! partial wave dipoles input from RSOLVE
+  lu_pw_dipoles     = >>>LU_PW_DIPS<<<,
+  nset_pw_dipoles   = >>>NS_PW_DIPS<<<,
+  format_pw_dipoles = 'FORMATTED',
+
+  ! selection of transitions (initial/final states)
+  no_neutral_states = 1,
+  no_ion_states     = >>>NTARG<<<,
+  first_Ip          = >>>IP<<<,
+
+  ! smoothing of partial wave dipoles
+  smooth = >>>SMOOTH<<<,
+/
+
+&smooth
+  ismooth = 1,
+  eleft   = 0.0,
+/
