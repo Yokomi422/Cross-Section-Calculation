@@ -1,0 +1,56 @@
+#!/bin/bash
+
+# Script for running QCHEM calculations
+# Serial mode or using parallel OpenMP.
+# For parallel MPI version, the second parametr must be "mpi".
+# Different methods are parallelized with OpenMP or MPI. See the QCHEM manual.
+
+if [ "$#" -lt 1 ] ; then
+   echo "Usage: $(/usr/bin/basename $0) <input_file> [par_type] [version] [SAVEWF]"
+   echo "par_type is either mpi or openmp"
+   echo "\"SAVEWF\" is the name of the scratch folder with stored wavefunction"
+   echo
+   exit 1
+fi
+
+if [[ -z $NSLOTS ]];then
+   NSLOTS=1
+fi
+version=$3
+parall=$2
+INPUT=$1
+WF=$4
+
+source SetEnvironment.sh QCHEM $version
+if [[ $? != "0" ]];then
+   echo "Error when exporting QCHEM parameters in SetEnvironment.sh"
+   exit 1
+fi
+
+export JOBDIR=$(pwd)
+
+export QCSCRATCH=${JOBDIR}
+inp=$(basename $INPUT .inp)
+inp=$(basename $inp .com)
+export QCLOCALSCR=/scratch/${USER}/QCHEM-${inp}-${JOB_ID}
+mkdir $QCLOCALSCR
+
+if [[ ${NSLOTS} -eq 1 ]]; then
+  source ${qcroot}/qcenv.sh
+  qchem ${INPUT} ${INPUT}.out $WF &> ${INPUT}.log
+
+elif [[ $parall = "mpi" ]];then
+  source ${qc_mpiroot}/qcenv.sh
+  qchem -np ${NSLOTS} ${INPUT} ${INPUT}.out $WF &> ${INPUT}.log
+
+elif [[ $parall = "openmp" ]];then
+  source ${qcroot}/qcenv.sh
+  qchem -nt ${NSLOTS} ${INPUT} ${INPUT}.out $WF &> ${INPUT}.log
+
+else 
+   echo "ERROR in QCHEM: Incorrent parallel environment! 2nd parameter to this script should be \"mpi\" or \"openmp\""
+   exit 1
+fi
+
+rm -rf TMP core
+
