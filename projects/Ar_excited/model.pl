@@ -12,9 +12,9 @@
 
   # Molecule
 
-  'molecule',    "Xe",               # Used only for directory and descriptions
-  'atoms',        ["Xe"],             # All atoms must be specified
-  'nelectrons',    54,               # number of target electrons (54 - 28 ECP = 26 valence electrons)
+  'molecule',    "Ar",               # Used only for directory and descriptions
+  'atoms',        ["Ar"],             # All atoms must be specified
+  'nelectrons',    18,               # number of target electrons
   'symmetry',     "C1",              # Options are "D2h", "C2v", "C2", "Cs", "C2h", "D2", "Ci", "C1"
 
   # Units
@@ -28,7 +28,7 @@
   # Important note: Put correct numbers of orbitals even for SE and SEP
   #
   # Choices below will determine which orbitals are generated and how many are used
-  'basis',         "cc-pVTZ-PP-Xe",         # make sure there are corresponding files in $dir_basis (see below)
+  'basis',         "cc-pVTZ",         # make sure there are corresponding files in $dir_basis (see below)
   'orbitals',      "natural",         # which orbitals to use, HF = Hartree-Fock orbitals (default), natural = natural orbitals obtained by Molpro with CASSCF
   'charge_of',      "target",         # PHOTO/RMT: use orbitals for N-electron system (= "target") or (N+1)-electron system (= "scattering")
   'select_orb_by',  "molden",         # molden = use orbitals as ordered in Molden file, energy = use orbitals ordered by energy
@@ -39,11 +39,11 @@
                                       #             "CAS-B" = standard close coupling with (core+cas)^N+1 and (core+cas)^N x (virtual)^1
                                       #             "CAS-C" = adds (core+cas)^N-1 x (virtual)^2 to CAS-B (to add more polarization)
                                       #   if you want to run FCI calculation then set "CAS" and 'nactive' = -1 and 'nvirtual' = 0 
-  'nfrozen',       0,                 # number of frozen target orbitals (used for SEP and CAS) - 0 for ECP      
-  'nactive',       9,                 # number of active target orbitals (used for SEP and CAS) - 5s2 5p6 + 1
+  'nfrozen',       6,                 # number of frozen target orbitals (used for SEP and CAS)      
+  'nactive',       6,                 # number of active target orbitals (used for SEP and CAS)
                                       #   if -1 then all available orbitals provided by the basis are used 
-  'nvirtual',      14,                 # number of virtual orbitals
-  'nreference',    23,                 # number of orbitals used for searching reference orbitals
+  'nvirtual',      7,                 # number of virtual orbitals
+  'nreference',    12,                 # number of orbitals used for searching reference orbitals
 
   # if the following arrays are empty (zeroes) then orbitals are chosen automatically according to their ordering,
   # ("energy" or "molden" for molpro orbitals, but currently just "energy" for psi4 orbitals),
@@ -52,7 +52,7 @@
   # be careful with these settings, if you choose your active space differently than orbitals are ordered
   # you should specify also which virtual orbitals you want to use
   'frozen_orbs',   [0,0,0,0,0,0,0,0], # which orbitals for each symmetry to use as frozen, 
-  'active_orbs',   [9,0,0,0,0,0,0,0], # which orbitals for each symmetry to use as active, 
+  'active_orbs',   [0,0,0,0,0,0,0,0], # which orbitals for each symmetry to use as active, 
   'virtual_orbs',  [0,0,0,0,0,0,0,0], # which orbitals for each symmetry to use as virtual, 
   'reference_orbs',[0,0,0,0,0,0,0,0], # which orbitals for each symmetry to use for searching reference orbitals, 
 
@@ -86,8 +86,8 @@
   'qchem_constraints', undef, # Molpro allows simple constraints for ORMASSCF (see tutorial).
 
   'MAS', [
-    8, [8,8], 'active', # Xenon has 8 electrons in valence orbitals (essentially CAS(8,8))
-  # For xenon atom with ECP28, we use an active space with 8 electrons in 8 orbitals (5s and 5p)
+    8, [8,8], 'active', # Argon has 8 electrons in valence orbitals (essentially CAS(8,8))
+  # For argon atom, we use an active space with 8 electrons in 8 orbitals (3s and 3p)
   ],
   'constraints', undef, # e.g. sub {my $dist = shift; return !($dist->[1] > 1);}, # Additional constraints
 
@@ -97,8 +97,8 @@
   # the constraints on the target space.
   # Below is equivalent to the CAS-B model:
   'l2_MAS', [
-    8, [8,9], 'active', # Xenon ground state plus single excitations (N+1 electrons)
-    3, [0,1], 'active', # Virtual orbitals for additional correlation
+    8, [8,9], 'active', # Argon ground state plus single excitations (N+1 electrons)
+    5, [0,1], 'active', # Virtual orbitals for additional correlation
   ],
   'l2_constraints', undef, # Additional constraints.
   # ---------------------------------------------------------------------------
@@ -106,16 +106,16 @@
   # Number of target states used to generate orbitals  in MOLPRO CASSCF calculation
   # for closed-shell target, specify the number of singlets, triplets, ...
   # for   open-shell target,                       doublets, quartets, ...
-  'ncasscf_states', {'singlet', [2,0,0,0,0,0,0,0],
-                     'triplet', [0,0,0,0,0,0,0,0]},
+  'ncasscf_states', {'singlet', [8,0,0,0,0,0,0,0],
+                     'triplet', [4,0,0,0,0,0,0,0]},
 
   # Target states: for closed-shell target, specify the number of singlets, triplets, ...
   #                for   open-shell target,                       doublets, quartets, ...   
   # for each symmetry (irreducible representation)
   # number of all target states which will be calculated
-  'ntarget_states', {'singlet', [2,0,0,0,0,0,0,0],  # number of target states to calculate in each irreducible representation (IR)
-                     'triplet', [0,0,0,0,0,0,0,0]},
-  'ntarget_states_used', "2",        # number of target states which will be actually used in scattering calculations 
+  'ntarget_states', {'singlet', [8,0,0,0,0,0,0,0],  # number of target states to calculate in each irreducible representation (IR)
+                     'triplet', [4,0,0,0,0,0,0,0]},
+  'ntarget_states_used', "12",        # number of target states which will be actually used in scattering calculations 
                                       # (chosen according to their energy from states above)
   
   # Deletion thresholds, used in  scatci_integrals for the continuum orthogonalization
@@ -142,7 +142,7 @@
 
   # Continuum basis set  
   'use_GTO',             1,              # do you want to use a Gaussion type basis?
-  'radius_GTO',         15,              # radius for which Gaussian basis was optimized (basis sets available for radius 10, 13, 15, 18)
+  'radius_GTO',         13,              # radius for which Gaussian basis was optimized (basis sets available for radius 10, 13, 15, 18)
   'maxl_GTO',            4,              # the highest partial wave used in the continuum Gaussian basis
                                          # search the directory basis.sets to find out 
                                          # which continuum bases are available (they start with swmol3.continuum...)
@@ -155,7 +155,7 @@
   'maxl_legendre_1el',  70,              # maximum L to use in Legendre expansion for nuclear attraction integrals in the B-sline basis
   'maxl_legendre_2el',  55,              # maximum L to use in Legendre expansion for 2-electron integrals in the B-sline basis
 
-  'rmatrix_radius',   15.0,              # R-matrix radius used for scattering, it is also where the BTO basis ends
+  'rmatrix_radius',   13.0,              # R-matrix radius used for scattering, it is also where the BTO basis ends
 
  # Propagation step
   'max_multipole',       2,              # maximum multipole to be retained in expansion of long range potentials

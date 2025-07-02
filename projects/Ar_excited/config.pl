@@ -34,7 +34,7 @@
   'mpi_rsolve',     "",  # MPI launcher command for mpi-rsolve (e.g. "mpirun -np 32"; if empty, serial rsolve will be used)
 
   # Run-time options for SCATCI_INTEGRALS
-  'buffer_size',  100000,  # Size of temporary arrays for integral transformation in MiB
+  'buffer_size',  5000,  # Size of temporary arrays for integral transformation in MiB
   'delta_r1',     0.25,  # Length, in Bohr, of the elementary radial quadrature needed for evaluation of the mixed BTO/GTO integrals
   'transform_alg',   0,  # Choice of the integral transformation algorithm: 0 = auto, 1 = sparse (optimal for BTO and mixed BTO/GTO continuum), other = dense
                          # The sparse transformation is not available in distributed (MPI) mode.
@@ -86,7 +86,7 @@
   'run_eigenp',      1,  # calculate eigenphase sums for all symmetries
   'run_tmatrx',      1,  # calculate T-matrices for all symmetries
   'run_ixsecs',      1,  # calculate cross sections for all symmetries
-  'run_reson',       1,  # calculate resonance fits for all symmetries
+  'run_reson',       0,  # calculate resonance fits for all symmetries
   'run_time_delay',  0,  # calculate time delays (requires a program that is not part of UKRmol+)
 
   # Photoionization
