@@ -106,16 +106,16 @@
   # Number of target states used to generate orbitals  in MOLPRO CASSCF calculation
   # for closed-shell target, specify the number of singlets, triplets, ...
   # for   open-shell target,                       doublets, quartets, ...
-  'ncasscf_states', {'singlet', [8,0,0,0,0,0,0,0],
-                     'triplet', [4,0,0,0,0,0,0,0]},
+  'ncasscf_states', {'singlet', [1,0,0,0,0,0,0,0],
+                     'triplet', [1,0,0,0,0,0,0,0]},
 
   # Target states: for closed-shell target, specify the number of singlets, triplets, ...
   #                for   open-shell target,                       doublets, quartets, ...   
   # for each symmetry (irreducible representation)
   # number of all target states which will be calculated
-  'ntarget_states', {'singlet', [8,0,0,0,0,0,0,0],  # number of target states to calculate in each irreducible representation (IR)
-                     'triplet', [4,0,0,0,0,0,0,0]},
-  'ntarget_states_used', "12",        # number of target states which will be actually used in scattering calculations 
+  'ntarget_states', {'singlet', [1,0,0,0,0,0,0,0],  # number of target states to calculate in each irreducible representation (IR)
+                     'triplet', [1,0,0,0,0,0,0,0]},
+  'ntarget_states_used', "2",        # number of target states which will be actually used in scattering calculations 
                                       # (chosen according to their energy from states above)
   
   # Deletion thresholds, used in  scatci_integrals for the continuum orthogonalization
@@ -167,7 +167,7 @@
 
  # Initial and final states for which the cross sections are calculated
   'maxi',              "1",              # the highest initial state for which cross sections are required
-  'maxf',              "0",              # the highest final state for which cross sections are required (zero means all)
+  'maxf',              "2",              # the highest final state for which cross sections are required (zero means all)
 
   # SCATTERING only setting
   'positron_flag',       0,             #0 for electron scattering, 1 for positron scattering 
