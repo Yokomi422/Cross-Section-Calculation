@@ -1,0 +1,73 @@
+#!/bin/bash
+function PrintHelp {
+   echo " "
+   echo "Launcher for DFTB+ jobs."
+   echo "Note that input paramaters have to be in file \"dftb_in.hsd\" "
+   echo " "
+   echo "USAGE: 'launchDFTB queue [-n nproc] [-v version]' "
+   echo " "
+   . SetEnvironment.sh DFTB -ver
+   exit 1
+}
+
+NUMPARAMS=1
+nproc=1
+index=0
+while [[ $# > 0 ]]
+do
+   arg="$1"
+   case $arg in
+      "-h" )
+      PrintHelp
+      ;;
+      "-v" )
+      version=$2
+      shift 
+      ;;
+      "-n" )
+      nproc=$2
+      shift 
+      ;;
+      *)
+      if [[ $index -eq 0 ]];then
+         queue=$1
+      fi
+      let index++
+      ;;
+   esac
+
+   shift 
+
+done
+if [[ $index -ne $NUMPARAMS ]];then
+   echo "Incorrect number of parameters."
+   PrintHelp
+fi
+
+
+if [[ ! -e "dftb_in.hsd" ]];then
+   echo "File dftb_in.hsd does not exist. Exiting."
+   PrintHelp
+fi
+
+
+cat >r.dftb << EOF
+#!/bin/bash
+
+#$ -cwd
+#$ -e .
+#$ -o .
+#$ -V
+
+DFTB $nproc $version
+EOF
+
+echo "$nproc proccesors will be used"
+if [[ "$nproc" -eq 1 ]];then
+   echo "qsub -cwd -q $queue r.dftb_$$"
+   qsub -cwd -q $queue r.dftb
+else
+   echo "qsub -cwd -q $queue -pe shm $nproc r.$input"
+   qsub -cwd -q $queue -pe shm $nproc r.dftb
+fi
+

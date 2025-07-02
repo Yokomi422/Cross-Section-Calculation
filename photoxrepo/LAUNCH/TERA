@@ -1,0 +1,132 @@
+#!/bin/bash
+if [ -z $1 ];then
+  echo "No input file specified. Exiting..."
+  echo "Call as: $0 input.com [version]"
+  . SetEnvironment.sh TERACHEM -ver
+  exit 1
+fi
+
+if [[ ! -e "$1" ]];then
+   echo "Input file $1 doesn't exist!"
+   exit 1
+fi
+
+
+CUR_DIR=$(pwd)
+inp=$1
+# [[:blank:]]+ matches also tabs 
+#numgpus=$(egrep -e '^[[:blank:]]*gpus[[:blank:]]+' $1 | head -1 | awk '{print $2}')
+
+keyfiles=( coordinates qmmm guess plumedfile pcm_read fon_guess \
+  pcm_radii_file restartmd casguess qmindices prmtop )
+declare -A file filename file2 filename2
+
+for f in ${keyfiles[@]};do
+   file[$f]=$(awk -v file="$f" '{if ($1==file) {print $2;exit 0}}' $inp)
+   # this one  is neccessary for unrestricted guesses
+   file2[$f]=$(awk -v file="$f" '{if ($1==file) {print $3;exit 0}}' $inp)
+   # Allow comments at the end of input line
+   if [[ ${file2[$f]} =~ ^# ]];then
+      file2[$f]=""
+   fi
+   if [[ ! -z ${file[$f]} ]];then
+      if [[ ! -f ${file[$f]} && ${file[$f]} != "sad" && ${file[$f]} != "hcore" ]];then
+         echo "ERROR: Could not found file ${file[$f]}"
+         exit 1
+      fi
+      filename[$f]=$(basename ${file[$f]})
+   fi
+   if [[ ! -z ${file2[$f]} ]];then
+      if [[ ! -f ${file2[$f]} ]];then
+         echo "ERROR: Could not found file ${file2[$f]}"
+         exit 1
+      fi
+      filename2[$f]=$(basename ${file2[$f]})
+   fi
+done
+
+# This could all be done more nicely using awk only
+numgpus=$(awk '{if ($1=="gpus") {print $2;exit 0}}' $inp)
+if [ -z $numgpus ];then
+  echo "Number of gpus not specified. Exiting..."
+  echo "Set variable "gpus" in $1"
+  exit 1
+fi
+
+
+scrdir=$(awk '{if ($1=="scrdir") {print $2;exit 0}}' $inp)
+
+#- All clear, let's go.
+
+version=$2
+SCRDIR_BASE=/scratch/$USER/  # determined also in SetEnvironment.sh
+source SetEnvironment.sh TERACHEM $version
+if [[ $? != "0" ]];then
+   echo "Error when exporting TeraChem parameters in SetEnvironment.sh"
+   exit 1
+fi
+
+node=$(uname -n)
+date
+echo "NODE  $node" > job.log.${JOB_ID}
+
+if [[ -z $scrdir ]];then
+   copyback=true
+   input=$(basename $1 .inp)
+   input=$(basename $input .com)
+   scrdir="$SCRDIR_BASE/TERA-${input}-${JOB_ID}"
+   echo "SCRATCH  $scrdir" >> job.log.${JOB_ID}
+   mkdir $scrdir
+   echo "scrdir not specified, using : $scrdir"
+
+   input=$scrdir/$1
+   cp $1 $input
+
+   # Create auxiliary input file and copy files to scratch
+   # The following should no longer be necessary with new terachem
+   # echo "memcheck no" > $scrdir/$1
+   for f in ${keyfiles[@]};do
+      if [[ ! -z ${file[$f]} && ! -z ${file2[$f]} ]];then
+         # for "guess" keyword
+         sed -i "s/^[[:blank:]]*$f.*$/$f ${filename[$f]} ${filename2[$f]} /" $input
+         cp ${file[$f]} $scrdir/${filename[$f]}
+         cp ${file2[$f]} $scrdir/${filename2[$f]}
+      elif [[ ! -z ${file[$f]} ]];then
+         sed -i "s/^[[:blank:]]*$f.*$/$f ${filename[$f]}/" $input
+         cp ${file[$f]} $scrdir/${filename[$f]}
+      fi
+   done
+
+   cd $scrdir
+
+elif [ -e $scrdir ];then
+
+   echo "WARNING: Scratch directory specified in $1 already exists!"
+   echo "It's content will be rewritten." 
+   copyback=false
+
+else
+
+   echo "SCRATCH  $scrdir" >> job.log.${JOB_ID}
+   copyback=false
+
+fi
+
+export OMP_NUM_THREADS=$numgpus  # setting to number of gpus
+# used only for MKL library anyway i.e. for diagonalization
+
+$TERAEXE $1 > $CUR_DIR/$1.out
+
+if [[ $copyback = "true" ]];then
+ cd ../
+ cp -r $scrdir/ $CUR_DIR
+ if [[ $? -ne "0" ]];then
+   echo "Error when copying the data from scratch back to the server."
+   echo "I will keep the directory $scrdir on node:"
+   uname -a
+   exit 1
+ fi
+ rm -r $scrdir
+fi
+
+

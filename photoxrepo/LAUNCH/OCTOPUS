@@ -1,0 +1,62 @@
+#!/bin/bash
+
+#$ -cwd -V
+
+#required libraries for OCTOPUS
+source SetEnvironment.sh OCTOPUS
+
+name=$1
+jobfile=job.log
+delscratch="true"
+
+export basedir=$PWD
+export scrdir="/scratch/${USER}"
+export SCRATCH=$scrdir/${JOB_ID}
+
+echo "NODE  ${HOSTNAME}"   >  $jobfile
+echo "SCRATCH  ${SCRATCH}"    >>  $jobfile
+echo  $basedir      >>  $jobfile
+echo 'NSLOTS: '${NSLOTS} >>  $jobfile   #NSLOTS
+
+if [[ -d $SCRATCH ]];then
+   echo "Job direcory $SCRDIR already exist!"
+   echo "Exiting..."
+   exit 1
+else
+   mkdir ${SCRATCH}
+   cp -p * $SCRATCH/.
+   if [[ -d static ]];then
+      cp -r static $SCRATCH
+   fi
+   if [[ -d restart ]];then
+      cp -r restart $SCRATCH
+   fi
+fi
+
+cd $SCRATCH
+ 
+function clean_scratch {
+   cp -pr * $basedir/.
+   if [[ $? -ne "0" ]];then
+      echo "Error when copying the data from scratch back to the server."
+      echo "I will keep the directory $SCRATCH on node ${HOSTNAME}"
+      exit 1
+   fi
+   if [[ $delscratch -eq "true" ]];then
+      cd ../
+      rm -r $SCRATCH
+   fi
+   exit 1
+}
+trap clean_scratch SIGUSR2  #if qdel JOBID then copy current data to basedir
+
+
+if [[ ${NSLOTS} -gt "1" ]]; then
+mpirun -np ${NSLOTS} octopus > $name.out
+else
+octopus > $name.out
+fi
+
+echo 'Normal termination of:' ${JOB_ID} >> $jobfile
+clean_scratch
+

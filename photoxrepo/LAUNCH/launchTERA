@@ -1,0 +1,177 @@
+#!/bin/bash
+
+
+# First, determine where we are. 
+node=$(uname -a | awk '{print $2}' )
+if [[ "$node" =~ ^s[0-9]+$|as67-1 ]];then
+   cluster=as67
+elif [[ "$node" =~ ^a[0-9]+$|403-a324-01 ]];then
+   cluster=a324
+elif [[ "$node" =~ ^n[0-9]+$|403-as67-01  ]];then
+   cluster=as67gpu
+else
+   echo "I did not recognize any of the PHOTOX clusters. Please check the script launchTERA"
+   echo "node=$node"
+   exit 1
+fi
+
+
+function PrintHelp {
+   echo " "
+   echo "This is the launching script for TeraChem jobs on PHOTOX clusters. "
+   echo " "
+   echo "SYNTAX: launchTERA input.com queue [-v version]"
+   echo "where the queue is:"
+   if [[ $cluster = "a324" ]];then
+      echo " \"m2090\",\"gtx690\", gtx970 or \"titan\"."
+   elif [[ $cluster = "as67gpu" ]];then
+      echo "nq-gpu"
+   fi
+   . SetEnvironment.sh TERACHEM -ver
+   exit 1
+}
+
+NUMPARAMS=2
+index=0
+while [[ $# > 0 ]]
+do
+   arg="$1"
+   case $arg in
+      "-h" )
+      PrintHelp
+      ;;
+      "-v" )
+      version=$2
+      shift 
+      ;;
+      "-p" )
+      PROJECT_ID=$2
+      shift 
+      ;;
+      *)
+      if [[ $index -eq 0 ]];then
+         input=$1
+      elif [[ $index -eq 1 ]];then
+         queue=$1
+      fi
+      let index++
+      ;;
+   esac
+
+   shift 
+
+done
+
+if [[ ! -f $input ]];then
+   echo "Input file $input does not exist!"
+   PrintHelp
+fi
+
+if [[ $index -ne $NUMPARAMS ]];then
+   echo "Incorrect number of parameters."
+   PrintHelp
+fi
+
+if [[ ! $queue =~ m2090|gtx690|titan|^nq-gpu|gtx970|gtx980|qnvidia ]];then
+   echo "$queue is not a valid GPU queue."
+   error=1
+fi
+
+if [[ "$queue" =~ gtx9[78]0 && "$version" =~ ^1.5 ]];then
+   echo "You need to use development version of TeraChem on GTX970 cards."
+   echo "Provide the "dev" parameter or use differrent queue."
+   error=1
+fi
+
+
+numgpus=$(awk '{if ($1=="gpus") {print $2;exit 0}}' $input)
+
+declare -A file file2 gpumax PROJECT_NAME
+gpumax[aq-gpu-m2090]=2
+gpumax[aq-gpu-gtx690]=4
+gpumax[aq-gpu-gtx970]=2
+gpumax[aq-gpu-gtx980]=2
+gpumax[aq-gpu-titan]=4
+gpumax[nq-gpu-rtx]=2
+gpumax[nq-gpu]=4
+gpumax[qnvidia]=1
+
+if [[ ! $queue =~ \-gpu ]];then
+   queue=aq-gpu-$queue
+fi
+
+# Remove specific node, if specified
+qname=${queue%%@*}
+
+if [[ -z $numgpus ]];then
+   echo "Number of gpus not specified. Exiting..."
+   echo "Please, set variable \"gpus\" in $1 ."
+   error=1
+elif [[ "$numgpus" -gt ${gpumax[$qname]} ]];then
+   echo "Maximum number of gpus for queue $q is ${gpumax[$qname]}."
+   echo "Please, adjust variable gpu in your input file."
+   echo "Job not submitted."
+   error=1
+fi
+
+
+keyfiles=( coordinates qmmm guess plumedfile pcm_read fon_guess \
+  pcm_radii_file restartmd casguess qmindices prmtop )
+
+# Check for presence of input files
+for f in ${keyfiles[@]};do
+   file[$f]=$(awk -v file="$f" '{if ($1==file) {print $2;exit 0}}' $input)
+   # this one is neccessary for unrestricted guesses
+   file2[$f]=$(awk -v file="$f" '{if ($1==file) {print $3;exit 0}}' $input)
+   # Allow comments at the end of input line
+   if [[ ${file2[$f]} =~ ^# ]];then
+      file2[$f]=""
+   fi
+   if [[ ! -z ${file[$f]} ]];then
+      if [[ ! -f ${file[$f]} && ${file[$f]} != "sad" && ${file[$f]} != "hcore" ]];then
+         echo "ERROR: Could not found file \"${file[$f]}\""
+         error=1
+      fi
+   fi
+   if [[ ! -z ${file2[$f]} ]];then
+      if [[ ! -f ${file2[$f]} ]];then
+         echo "ERROR: Could not found file ${file2[$f]}"
+         error=1
+      fi
+   fi
+done
+
+if [[  -z ${file["coordinates"]} ]];then
+   echo "You did not specify input coordinates!"
+   echo "Set variable \"coordinates\" in $input"
+   error=1
+fi
+
+if [[ $error -eq 1 ]];then
+   PrintHelp
+fi
+
+name=$(basename $input .inp)
+name=$(basename $name .com)
+name=$(basename $name .in)
+
+if [[ $queue == "nq-gpu-rtx" ]];then
+   gpu_resource="-l num_gpu_job=$numgpus"
+else
+   gpu_resource="-l num_gpu=1 -pe shm $numgpus"
+fi
+
+cat > r.$name << EOF
+#!/bin/bash
+
+#$ -cwd 
+#$ -e . 
+#$ -o .
+#$ -V -cwd
+#$ -q $queue
+#$ $gpu_resource
+
+TERA $input $version
+EOF
+
+qsub  r.$name

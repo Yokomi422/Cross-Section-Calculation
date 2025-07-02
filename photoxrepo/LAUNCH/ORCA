@@ -1,0 +1,55 @@
+#!/bin/bash
+
+input=$1
+version=$2
+# Also sets the MPI environment
+source SetEnvironment.sh ORCA $version
+if [[ $? != "0" ]];then
+   echo "Error when exporting ORCA parameters in SetEnvironment.sh"
+   exit 1
+fi
+
+KDE=$(pwd)
+
+
+input=$(basename $input .inp)
+input=$(basename $input .com)
+export PATH=$orcaroot:$PATH
+export SCRDIR="/scratch/$USER/ORCA-$input-${JOB_ID}"
+
+function copy_scrdir {
+cp * $KDE
+if [[ $? -ne "0" ]];then
+   echo "Error when copying the data from scratch back to the server."
+   echo "I will keep the directory $SCRDIR on node: $HOSTNAME"
+   exit 1
+fi
+}
+
+function clean_scrdir {
+   echo "Cleaning up temporary files in scratch directory."
+   /bin/rm -rf *.tmp*
+   copy_scrdir
+   cd ../
+   /bin/rm -rf $SCRDIR
+   exit
+}
+
+# The following should trap signal sent by qdel SGE command
+# when submitted with qsub -notify option
+trap clean_scrdir SIGUSR2
+
+echo "NODE  $node" > job.log.${JOB_ID}
+echo "SCRATCH  $SCRDIR" >> job.log.${JOB_ID}
+
+mkdir -p $SCRDIR
+cp $1 $SCRDIR
+cd $SCRDIR
+echo "Running ORCA job $1"
+uname -n
+date
+$ORCAEXE $1 &> $KDE/$1.out 
+
+clean_scrdir
+
+
