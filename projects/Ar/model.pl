@@ -106,7 +106,7 @@
   # Number of target states used to generate orbitals  in MOLPRO CASSCF calculation
   # for closed-shell target, specify the number of singlets, triplets, ...
   # for   open-shell target,                       doublets, quartets, ...
-  'ncasscf_states', {'singlet', [2,0,0,0,0,0,0,0],
+  'ncasscf_states', {'singlet', [1,0,0,0,0,0,0,0],
                      'triplet', [0,0,0,0,0,0,0,0]},
 
   # Target states: for closed-shell target, specify the number of singlets, triplets, ...
@@ -115,7 +115,7 @@
   # number of all target states which will be calculated
   'ntarget_states', {'singlet', [2,0,0,0,0,0,0,0],  # number of target states to calculate in each irreducible representation (IR)
                      'triplet', [0,0,0,0,0,0,0,0]},
-  'ntarget_states_used', "2",        # number of target states which will be actually used in scattering calculations 
+  'ntarget_states_used', "1",        # number of target states which will be actually used in scattering calculations 
                                       # (chosen according to their energy from states above)
   
   # Deletion thresholds, used in  scatci_integrals for the continuum orthogonalization

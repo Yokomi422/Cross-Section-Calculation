@@ -86,7 +86,7 @@
   'run_eigenp',      1,  # calculate eigenphase sums for all symmetries
   'run_tmatrx',      1,  # calculate T-matrices for all symmetries
   'run_ixsecs',      1,  # calculate cross sections for all symmetries
-  'run_reson',       1,  # calculate resonance fits for all symmetries
+  'run_reson',       0,  # calculate resonance fits for all symmetries
   'run_time_delay',  0,  # calculate time delays (requires a program that is not part of UKRmol+)
 
   # Photoionization
