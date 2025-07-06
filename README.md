@@ -1,107 +1,188 @@
-# Programs setup
-if you want to run ukrmol+ scirpts, please setup as following
+# UKRmol - UK R行列法による分子散乱計算
+
+## 概要
+
+UKRmolは、電子-分子および陽電子-分子散乱計算のためのUK R行列法の実装です。このプロジェクトは、分子の電子散乱断面積、光イオン化断面積、共鳴位置と幅、およびターゲット状態の特性を計算するための包括的なツールセットを提供します。
+
+## 主な機能
+
+- **電子散乱計算**: 弾性散乱および非弾性散乱断面積の計算
+- **光イオン化**: 分子の光イオン化断面積の計算
+- **共鳴解析**: 共鳴位置と幅の同定
+- **複数の計算モデル**: SE、SEP、CAS、CHF、MASなど
+- **並列計算**: 幾何構造と対称性に対する並列実行をサポート
+
+## ディレクトリ構造
+
+```
+UKRmol/
+├── basis.sets/          # 量子化学基底関数セット
+│   ├── sto-3g/         # 最小基底
+│   ├── 6-31g/          # ポプル基底
+│   ├── cc-pvtz/        # 相関一貫基底
+│   └── continuum/      # 連続状態基底
+├── input.templates/     # 計算用テンプレートファイル
+│   ├── molpro.inp      # Molpro入力テンプレート
+│   ├── psi4.inp        # Psi4入力テンプレート
+│   ├── scatci_integrals.inp  # 積分変換
+│   ├── congen.inp      # 配置生成
+│   └── scattering.*.inp # 散乱計算
+├── projects/           # 分子別計算プロジェクト
+│   ├── Ne/            # ネオン
+│   ├── He/            # ヘリウム
+│   ├── Ar/            # アルゴン
+│   ├── Kr/            # クリプトン
+│   ├── Xe/            # キセノン
+│   └── H2O/           # 水分子
+├── resources/          # ライブラリとユーティリティ
+│   ├── lib/           # Perlモジュール
+│   └── scripts/       # 自動化スクリプト
+└── photoxrepo/        # 追加ツールとBEBモデル実装
+```
+
+## 前提条件
+
+### 必須ソフトウェア
+
+- **量子化学パッケージ** (以下のいずれか):
+  - Molpro
+  - Psi4
+  - Gaussian
+  - ORCA
+  - Molcas
+- **R行列コード**:
+  - SCATCI (散乱計算)
+  - CONGEN (配置生成)
+  - RSOLVE (外部領域)
+- **プログラミング言語**:
+  - Perl 5.x
+  - Python 3.x (プロット用)
+- **並列計算** (オプション):
+  - MPI実装 (OpenMPI, MPICH等)
+
+## インストール
+
+1. リポジトリのクローン:
 ```bash
-# move to ukrmol+ directory
-cd /home/pj25000080/ku50001398/ukrmol+
+git clone https://github.com/yourusername/UKRmol.git
+cd UKRmol
 ```
 
-Before you execute ukrmol scripts you have to copy some files into your working directory.
-1. /scripts
-2. /lib
-
-After you have set up these above, to run ukrmol scripts please run the command below. 
-
-before running the scripts, you have to set properties of your target molecule on model.pl, geometry.pl
+2. 環境変数の設定:
 ```bash
-perl main.pl dirs.pl config.pl model.pl geometry.pl
+export UKRMOL_HOME=/path/to/UKRmol
+export PATH=$UKRMOL_HOME/resources/scripts:$PATH
 ```
 
-# error handling in main.pl
-## Can't locate ForkManager.pm
+3. 必要なPerlモジュールのインストール:
 ```bash
-an't locate ForkManager.pm in @INC (you may need to install the ForkManager module) (@INC contains: /home/pj2│ 21 
-5000080/ku50001398/ukrmol+/projects/He/../lib /home/pj25000080/ku50001398/perl5/lib/perl5/5.26.3/x86_64-linux-│ 22 
-thread-multi /home/pj25000080/ku50001398/perl5/lib/perl5/5.26.3
-6_64-linux-thread-multi /home/pj25000080/ku50001398/perl5/lib/perl5 /usr/local/lib64/perl5 /usr/local/share/pe│~                                                                                                                               
-rl5 /usr/lib64/perl5/vendor_perl /usr/share/perl5/vendor_perl /usr/lib64/perl5 /usr/share/perl5) at main.pl li│~                                                                                                                               
-ne 23.    
-```
-main.pl:23 
-```
-- use ForkManager;
-+ use Parallel::ForkManager;
+cpan install Config::General
+cpan install Math::Complex
 ```
 
-## Cat't locate ukrmollib.pm
-`
-`bash
-Can't locate ukrmollib.pm in @INC (you may need to install the ukrmollib module) (@INC contains: /home/pj25000│
-080/ku50001398/ukrmol+/projects/He/../lib /home/pj25000080/ku50001398/perl5/lib/perl5/5.26.3/x86_64-linux-thre│
-ad-multi /home/pj25000080/ku50001398/perl5/lib/perl5/5.26.3 /home/pj25000080/ku50001398/perl5/lib/perl5/x86_64│
--linux-thread-multi /home/pj25000080/ku50001398/perl5/lib/perl5 /usr/local/lib64/perl5 /usr/local/share/perl5 │
-/usr/lib64/perl5/vendor_perl /usr/share/perl5/vendor_perl /usr/lib64/perl5 /usr/share/perl5) at main.pl line 2│
-4.                                                                                                            │
-BEGIN failed--compilation aborted at main.pl line 24. 
-```
-somehow, cannot find modules on the same directory, so change the path in the main.pl directory.
-- about line 21, ../lib -> ../resources/lib
+## 使用方法
 
-## cannot make directory no permissions
+### 基本的なワークフロー
+
+1. **プロジェクトディレクトリの作成**:
+```bash
+cd projects/
+mkdir my_molecule
+cd my_molecule
+```
+
+2. **設定ファイルの作成**:
+   - `geometry.pl`: 分子構造の定義
+   - `model.pl`: 計算モデルのパラメータ
+   - `config.pl`: 実行設定
+   - `main.pl`: メイン実行スクリプト
+
+3. **計算の実行**:
+```bash
+perl main.pl
+```
+
+### 設定例 (H2O分子)
+
+`geometry.pl`:
 ```perl
-use File::Path qw(make_path);
+$geometry = {
+    atoms => [
+        { element => 'O',  x =>  0.000,  y => 0.000,  z => 0.000 },
+        { element => 'H',  x =>  0.757,  y => 0.586,  z => 0.000 },
+        { element => 'H',  x => -0.757,  y => 0.586,  z => 0.000 }
+    ],
+    charge => 0,
+    multiplicity => 1
+};
 ```
-- not effective
-- make_dir -> make_path
 
-change path
+`model.pl`:
 ```perl
-$dirs{'output'} = $dirs{'cwd'} . '/output' unless defined $dirs{'output'} && $dirs{'output'} ne '';
-nfo'} = 'both';warn ">>> output dir = $dirs{'output'}\n";
-warn ">>> dirs{output} = '$dirs{output}'\n";
-warn ">>> model{directory} = '$model{directory}'\n";
-warn ">>> about to make dirs{model} = '$dirs{model}'\n";
+$model = {
+    type => 'SEP',              # Static Exchange + Polarization
+    basis => 'cc-pvtz',         # 基底関数セット
+    active_space => [8, 4],     # CAS(8,4)
+    states => 5,                # 計算する状態数
+    energy_range => [0, 20],    # エネルギー範囲 (eV)
+};
+```
 
+## 計算モデル
 
-## Died at /home/pj25000080/ku50001398/ukrmol+/projects/He/../resources/lib/ukrmollib.pm line 628.
+- **SE (Static Exchange)**: 静的交換近似
+- **SEP (Static Exchange + Polarization)**: 分極効果を含む
+- **CAS (Complete Active Space)**: 完全活性空間法
+- **CHF (Coupled Hartree-Fock)**: 結合ハートリー・フォック法
+- **MAS (Multiple Active Spaces)**: 複数活性空間アプローチ
 
-in which_continuum_basis_file_to_use subroutine, 
-reason: basis.sets' path is inaccurate
+## 出力ファイル
 
-fix below
+計算後、以下のファイルが生成されます:
+
+- `cross_sections.dat`: 散乱断面積データ
+- `eigenphases.dat`: 固有位相シフト
+- `resonances.dat`: 共鳴パラメータ
+- `photoionization.dat`: 光イオン化断面積
+
+## プロット
+
+結果の可視化:
 ```bash
-unless ( defined $dirs{'basis'} && $dirs{'basis'} ne '' ) {
-  $dirs{'basis'} = "$dirs{'cwd'}${bs}../resources/basis.sets";
-}
-```
-## Could not open he.molden: No such file or directory at /home/pj25000080/ku50001398/ukrmol+/projects/He/../resources/lib/MultiSpace.pm line 1450.
-
-
-
-## display print_info
-```perl
-$run{'print_info'} = 'both';
-```
-## sh: /molpro: No such file or directory
-default path setting should be done
-
-## Warning: no template file for molpro.inp !
-
-## molpro input must be in pwd
-input file means target.molpro.inp, not inputs directory
-mpi program is not working, maybe because multi theaeds are on unknown pwds
--> no mpi
-
-* fehler on processor = maybe multi process issues?
-
-in ukrmollib.pl not relative path, not . included
-```
-my $input = basename($r_par->{'data'}->{'inputfile'});
-my $output = basename($r_par->{'data'}->{'outputfile'});
+python plot.py --input cross_sections.dat --output plot.png
 ```
 
-## run_code
-- not include .
-- not variable, but constant string
+## トラブルシューティング
 
-# important functions
-## run_code
+### よくある問題
+
+1. **メモリ不足エラー**:
+   - `config.pl`でメモリ割り当てを増やす
+   - より小さい基底関数セットを使用
+
+2. **収束しない場合**:
+   - 初期推定を改善
+   - 収束基準を緩和
+
+3. **並列実行の問題**:
+   - MPIが正しくインストールされているか確認
+   - ノード間通信を確認
+
+## 貢献
+
+プルリクエストを歓迎します。大きな変更の場合は、まずissueを開いて変更内容を議論してください。
+
+## ライセンス
+
+[ライセンスタイプを指定]
+
+## 引用
+
+このソフトウェアを使用した場合は、以下を引用してください:
+```
+[適切な引用情報を追加]
+```
+
+## 連絡先
+
+質問や問題がある場合は、[メールアドレス]までご連絡ください。
