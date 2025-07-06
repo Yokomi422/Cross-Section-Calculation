@@ -1,0 +1,16 @@
+#!/bin/sh
+
+if [ -e $1 ] ; then
+
+  if [ `uname` = "AIX" ] ; then
+    EXESIZE=`size -d $1 | awk '{ print  $2+$4+$6+$8+$10}'` 
+  else
+    EXESIZE=`size -d $1 | awk '{if ($1 !~ "text") print  $1+$2+$3}'` 
+  fi
+
+  echo $EXESIZE
+
+fi
+
+exit
+

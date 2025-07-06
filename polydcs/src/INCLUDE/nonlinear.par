@@ -1,0 +1,39 @@
+C
+C  Main include file for POLYDCS code.
+C
+C  The parameters are suitable to be used for a NON-LINEAR molecule.
+C
+C  This choice of the parameters has been made to optimize memory 
+C  allocation on the molecular systems we tested.
+C  In general, this set represent a good starting point for similar
+C  molecular systems, but using it "as is" without a fine tuning 
+C  could produce unpredictable results.
+C
+C  Parameters meaning:
+C
+C  maxn    ===>   Storage needed during M matrix calculation
+C                 It is proportional to (Lmax * Jmax)**2.
+C                 In the case of a linear molecule this is slightly
+C                 reduced due to the use of the B matrix.
+C  nang    ===>   Max no. of theta angles.
+C  ndcs    ===>   Max no. of J transitions to calculate.
+C  ngam    ===>   Max no. of terms for the factorial calculation.
+C  nlam    ===>   Max value of Lbig (L in the DCS Legendre expansion). 
+C  nps     ===>   Max value of L in Born Aproximation. It becomes relevant
+C                 only for B matrix calculation, so for non linear 
+C                 molecule it is set to 1.
+C  npw     ===>   Max no. of partial waves in the input k-matrices.
+C                 Two examples are given: 256 is the threshold for O3,
+C                 while 320 is for NH3 (Lmax=30 in both cases).
+C  nsym    ===>   Max no. of IRs (a1,a2,...) for a given molecular system 
+C
+
+      parameter (maxn = 87000)
+      parameter (nang = 91)
+      parameter (ndcs = 8)
+      parameter (ngam = 400)
+      parameter (nlam = 30)
+      parameter (nps  = 1)
+      parameter (npw  = 320) 
+      parameter (nsym = 10)
+

@@ -1,0 +1,18 @@
+e-CH4, SEP model with Exact Exchange + Vcp Pol. (a1,a2,e,t1,t2) @ 5.0 eV
+ch4.blm
+ch4.kmat
+0  0  0
+ 6.511282e-04
+   5.0
+   10   10   10   16    4    2
+    0    0     0    3    0    4    0    6
+   a1    8     8     1
+   a2    3     3     1
+   e1   10    10     2
+   e2   10    10     0
+  t1x   12    12     3
+  t1y   12    12     0
+  t1z   12    12     0
+  t2x   18    18     3
+  t2y   18    18     0
+  t2z   18    18     0
