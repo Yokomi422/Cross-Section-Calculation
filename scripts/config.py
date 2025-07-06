@@ -49,7 +49,7 @@ class UKRmolConfig:
     buffer_size: int = (
         5000  # Size of temporary arrays for integral transformation in MiB
     )
-    delta_rl: float = (
+    delta_r1: float = (
         0.25  # Length, in Bohr, of the elementary radial quadrature needed for evaluation of the mixed BTO/GTO integrals
     )
     transform_alg: int = (
@@ -76,7 +76,7 @@ class UKRmolConfig:
     save_Kmatrix: int = 0
     save_Tmatrix: int = 0
     keep_inputs: int = 1
-    keep_inputs: int = 1
+    keep_outputs: int = 1
 
     parallel_geom: int = 1
     parallel_symm: int = 1
@@ -88,7 +88,7 @@ class UKRmolConfig:
 
     use_saved_ramps: int = 0
     run_eigenp: int = 1
-    run_matrix: int = 1
+    run_tmatrix: int = 1
     run_ixsecs: int = 1
     run_reson: int = 0
     run_time_delay: int = 0
@@ -144,7 +144,7 @@ class UKRmolConfig:
             "ighs": "",
             "use_saved_ramps": "# If set to 1 the amplitudes and channel data saved from a previous run (using the options 'save_channels' and 'save_rmat_amp')\n  # will be used instead of running SWINTERF to generate them. This is useful in case the inner region data (e.g.fort.25) have\n  # not been saved only a rerun of the outer region is needed e.g. with a different energy grid or using a different set of programs.",
             "run_eigenp": "# calculate eigenphase sums for all symmetries",
-            "run_tmatrx": "# calculate T-matrices for all symmetries",
+            "run_tmatrix": "# calculate T-matrices for all symmetries",
             "run_ixsecs": "# calculate cross sections for all symmetries",
             "run_reson": "# calculate resonance fits for all symmetries",
             "run_time_delay": "# calculate time delays (requires a program that is not part of UKRmol+)",
@@ -202,7 +202,7 @@ class UKRmolConfig:
                 "Which programs to run",
                 [
                     "run_eigenp",
-                    "run_tmatrx",
+                    "run_tmatrix",
                     "run_ixsecs",
                     "run_reson",
                     "run_time_delay",
@@ -218,7 +218,7 @@ class UKRmolConfig:
                 if hasattr(self, key):
                     value = getattr(self, key)
                     formatted = self._format(value)
-                    comment = self._comment(value)
+                    comment = self._comment(key)
 
                     if comment is None:
                         perl_lines.append(f"  '{key}', {' ' * (18 - len(key))}{formatted}")
@@ -231,10 +231,3 @@ class UKRmolConfig:
         perl_lines.append(");")
         return "\n".join(perl_lines)
     
-config = UKRmolConfig()
-perl_config = config.transform()
-
-with open("config.pl", "w") as f:
-    f.write(perl_config)
-
-
