@@ -1,0 +1,125 @@
+                    ******************************
+                    *                            *
+                    *        POLYDCS V1.0        *
+                    *         June 1998          *
+                    *                            *
+                    ******************************
+
+
+e+ --> CO (FN)(s,p,d,f) @ 0.5 eV                                                
+
+  No. of Scattering K-matrices         (NSCAT)  =   5
+  Max Value of L (from K-matrices)     (LMAX)   =  20
+  Max Value of L (Born, <>0 if IPOL=1) (LMAXB)  =  40
+  Max Value of DCS PLeg Expansion      (LBIG)   =  40
+  No. of Rotational Transitions        (NT)     =   4
+  Print Flag (0:Min, 1:Norm, 2:Full)   (IPRINT) =   1
+
+  Polar molecule found (IPOL= 1)
+
+
+
+  MOLECULAR PROPERTIES:
+
+  Rotational Constant(s) in eV
+      (Az) = 0.000000E+00     (Bz) = 0.245142E-03     (Cz) = 0.000000E+00
+
+  Electric moments and polarizabilities in a.u.
+  Polarizabilities     (ALPHA0) = 13.30000        (ALPHA2) =  2.40000
+  Dipole           Theor.(DPOL) = -0.10878   Exp. (DPOLEX) =  0.04400
+  Quadrupole             (QUAD) = -1.58944        (QUADEX) = -1.85900
+
+  Irreducible Representations (IR)
+
+        IR #     IR Type      KSIZ      KSIZB     IR Read (0=No)
+          1          s         21         40            1
+          2          p         20         40            1
+          3          d         19         40            1
+          4          f         18         40            1
+          5          g         17         40            1
+
+
+  *** Rotational Transitions to be calculated ***
+
+        #       ji       jf
+       ---------------------
+        1        0        0
+        2        0        1
+        3        0        2
+        4        0        3
+
+  Energy (eV)  =    0.5000000
+  Energy (ryd) =    0.0367485  sqrt(Energy) [xki] =    0.1916990
+
+
+
+  Integral Cross Sections (CS) from T-matrix 
+  ------------------------------------------
+
+  Contribution of the IR # 1 to CS =   5.56719780 Bohr**2   1.55891407 Ang.**2
+  Contribution of the IR # 2 to CS =   0.56353682 Bohr**2   0.15780030 Ang.**2
+  Contribution of the IR # 3 to CS =   0.16778493 Bohr**2   0.04698275 Ang.**2
+  Contribution of the IR # 4 to CS =   0.10804900 Bohr**2   0.03025564 Ang.**2
+  Contribution of the IR # 5 to CS =   0.07902405 Bohr**2   0.02212813 Ang.**2
+  Contribution of the IR # 6 to CS =   0.06153853 Bohr**2   0.01723188 Ang.**2
+  Contribution of the IR # 7 to CS =   0.05017954 Bohr**2   0.01405116 Ang.**2
+  Contribution of the IR # 8 to CS =   0.04206572 Bohr**2   0.01177915 Ang.**2
+  Contribution of the IR # 9 to CS =   0.03598686 Bohr**2   0.01007696 Ang.**2
+  Contribution of the IR #10 to CS =   0.03126583 Bohr**2   0.00875499 Ang.**2
+  Contribution of the IR #11 to CS =   0.02749480 Bohr**2   0.00769903 Ang.**2
+  Contribution of the IR #12 to CS =   0.02441414 Bohr**2   0.00683639 Ang.**2
+  Contribution of the IR #13 to CS =   0.02185077 Bohr**2   0.00611860 Ang.**2
+  Contribution of the IR #14 to CS =   0.01968527 Bohr**2   0.00551223 Ang.**2
+  Contribution of the IR #15 to CS =   0.01783215 Bohr**2   0.00499332 Ang.**2
+  Contribution of the IR #16 to CS =   0.01622877 Bohr**2   0.00454434 Ang.**2
+  Contribution of the IR #17 to CS =   0.01482847 Bohr**2   0.00415224 Ang.**2
+  Contribution of the IR #18 to CS =   0.01359523 Bohr**2   0.00380691 Ang.**2
+  Contribution of the IR #19 to CS =   0.01250122 Bohr**2   0.00350056 Ang.**2
+  Contribution of the IR #20 to CS =   0.01152463 Bohr**2   0.00322710 Ang.**2
+  Contribution of the IR #21 to CS =   0.01064788 Bohr**2   0.00298160 Ang.**2
+
+
+  Integral Cross Section (CS) for all IRs   =   6.89723158 Bohr**2   1.93134749 Ang.**2
+
+
+
+  **************************************************************************
+      Results for  0 -->  0  J-J' transition summed on all K and K'
+  **************************************************************************
+
+  Partial Momentum Transfer Cross Section       =   1.21728766 10**-16 cm**2
+  Partial Integrated Differential Cross Section =   3.75393057 10**-16 cm**2
+
+
+  **************************************************************************
+      Results for  0 -->  1  J-J' transition summed on all K and K'
+  **************************************************************************
+
+  Partial Momentum Transfer Cross Section       =   0.12355999 10**-16 cm**2
+  Partial Integrated Differential Cross Section =   1.02717483 10**-16 cm**2
+
+
+  **************************************************************************
+      Results for  0 -->  2  J-J' transition summed on all K and K'
+  **************************************************************************
+
+  Partial Momentum Transfer Cross Section       =   1.34584737 10**-16 cm**2
+  Partial Integrated Differential Cross Section =   1.30012107 10**-16 cm**2
+
+
+  **************************************************************************
+      Results for  0 -->  3  J-J' transition summed on all K and K'
+  **************************************************************************
+
+  Partial Momentum Transfer Cross Section       =   0.00000000 10**-16 cm**2
+  Partial Integrated Differential Cross Section =   0.00000000 10**-16 cm**2
+
+  **************************************************************************
+                    DATA SUMMED ON ALL TRANSITIONS
+  **************************************************************************
+
+
+  Quantity Summed Over States (Complete Rep.):
+
+    Momentum Transfer Cross Section (CSM)      =     2.68669510 10**-16 cm**2
+    Integrated Differential Cross Section (CS) =     6.08122635 10**-16 cm**2

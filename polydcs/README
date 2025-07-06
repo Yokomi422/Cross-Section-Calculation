@@ -1,0 +1,236 @@
+
+ 
+ 
+              Main README file for the POLYDCS code
+              =====================================
+
+
+
+
+1. Introduction.
+----------------
+
+   The POLYDCS code has been written to calculate the Differential
+Cross Sections (DCS) of a variety of molecular systems, linear and
+non-linear targets, with/out static dipole moment.
+   Please, refer to the accompanying paper published by CPC[Ref.] and 
+provided by this distribution in Postscript (polydcs.ps) format, for 
+any additional insight on the theory and code implementation.
+
+
+   Authors: N. Sanna and F. A. Gianturco
+
+
+
+2. Unpacking the distribution.
+------------------------------
+
+   The distribution of the POLYDCS code is in tar.Z format, so as 
+usual, decompress it with the command 
+
+               uncompress polydcs.tar.Z | tar xvf -
+
+to extract everything under the current directory.
+A new dir will be created and named "polydcs"; its dir list is as
+follow:
+
+     README       This file. Use it for a quick startup...
+
+     /doc         Documentation dir. It contains the ps version
+                  of the paper accompanying this code.
+                  Please refer to this documentation as reference
+                  for this work.
+
+     /examples    Several examples are provided with the code.
+                  Each subdir include input, output, blm and K-matrix
+                  files in order to keep you ready to test your
+                  copy of the executable(s).
+                  Note that, the outputs were produced using an alpha
+                  workstation under Digital Unix 4.0b. 
+                  Examples subdirs:
+
+                  /CH4   e-methane DCS @ 5.0 eV with Lmax=10
+
+                  /O3    e-ozone DCS @ 15.0 eV with Lmax=12
+
+                  /CO    e+-carbon-monooxide @ 0.5 eV with Lmax=20
+ 
+                  /NH3   e-ammonia @ 5.0 eV with Lmax=10
+
+      /src        Source code directory. It contains F77 sources with
+                  parameter include files and also additional codes not 
+                  documented in the paper.
+
+      /bin        Main directory for the executables (polydcs[L]) for 
+                  the supported architectures (alpha, linux, rs6k, sun).
+
+
+
+3. Supported architectures.
+---------------------------
+
+   The architectures supported in the current version of POLYDCS are:
+
+   alpha   ===>   Digital alpha ws/server under Digital Unix 4.0x,
+                  DEC FORTRAN V4.1 or higher.
+
+   linux   ===>   Linux kernel 2.0.XX as available in RedHat 4.2 and 5.0
+                  distributions. g77 gnu FORTRAN compiler V0.5.21 or higher.
+
+   rs6k    ===>   IBM POWER2-3/PowerPC under AIX V4.X, IBM xlf FORTRAN
+                  compiler V4.X.
+
+   sun     ===>   SUN SPARC UltraI(II) under Solaris 2.5 (2.6),
+                  SUN FORTRAN VX.X
+
+
+   The code is written in plain F77 for serial execution. Porting on other
+unix flavours or machine architectures should be straightforward provided
+a standard F77 compiler is available.
+
+
+4. Build your POLYDCS executable(s).
+------------------------------------
+
+   Once you selected a given architecture, change dir in polydcs/src and
+issue the make command
+
+
+               make <MOL> ARCH=<your machine>
+
+
+   where 
+          <MOL> is void or either "linear" or "nonlinear" and 
+          <your machine> is "alpha", "linux", "rs6k", "sgi" or "sun".
+
+   The executable(s) will reside in polydcs/bin/<ARCH> directory and will
+be named "polydcsL" or "polydcs" for linear or non-linear molecular targets,
+respectively. The default is to build POLYDCS for "nonlinear" targets.
+
+   For example, the command 
+
+               make nonlinear ARCH=sun
+
+   or 
+
+               make ARCH=sun
+
+   will build the POLYDCS executable for a generic non-linear molecule
+as polydcs/bin/sun/polydcs. 
+   Note that, in order to avoid the mix of objects files with linear or
+nonlinear parameters built-in, a cleanup of all intermediate files is
+carried out before the compilation with make.
+
+   The reason why we chose to build different executables for 
+linear/non-linear targets reside in the fact that memory use is strongly 
+different for the two cases and so are the global parameters, as documented
+in the include files provided in polydcs/src/INCLUDE. Of course, one can
+choose a set of parameters "averaged" for both linear and non-linear molecules,
+but this can be done at the expense of memory usage and/or lower limits for
+DCS expansion (Lmax/Lbig for example).
+
+   Furthermore, you have three level of "cleanup" in the makefile provided 
+in the polydcs/src directory:
+
+     clean         remove everything but sources in polydcs/src dir.
+
+     cleanarch     as "clean" above but with further removing of the 
+                   polydcs executable in polydcs/bin/<ARCH> dir.
+ 
+     cleanall      as "clean" above but with further removing of ALL
+                   the polydcs executables in polydcs/bin.
+
+   In example, the command
+
+               make cleanall ARCH=sun 
+
+   will remove all the executables built under polydcs/bin by deleting
+all the subdirs in it.
+
+
+
+5. Testing your distribution.
+-----------------------------
+
+   In polydcs/examples you'll find several subdirs with complete examples
+for many of the molecular symmetries the code can handle. 
+   Within each of these subdirs an input file (*.inp), a blm input file 
+(*.blmXX, if needed), a k-matrix input file (*.kmYY) and an output file (*.out) 
+are present.
+   Feel free to test some or all of the tested systems, but remember in
+doing this that the reference architecture is "alpha". So, if any 
+minimal numerical deviation occurs, please check first if under "alpha"
+you respected the compilation flags and the DU runtime environment.
+   If under other (my be new...) architectures, check (if you did not
+modify the compilation flags) how the numerical differences are
+meaningless or not. In case of large deviation with respect to the 
+provided outputs, please do not hesitate to contact the authors to
+fix the problem.
+
+
+
+6. Unpublished features of the code.
+------------------------------------
+
+6.1 The "asym" routine.
+
+    The asym.f routine contains the Ac coefficients and E(J,Tau) energies
+for several "asymetric top" molecular systems. The Ac represent the 
+expansion coefficients of the rotational states J,Tau of the asymetric top
+as function of a symmetric top molecule, with relative energies being
+equal to E(J,Tau).
+    In order to calculate the cross sections for (0,0->J,Tau) transitions,
+one has to provide in the subroutine asym.f the Ac and the E(J,Tau) of 
+the molecular system under study. In doing this, the data layout present
+in asym.f must be strictly followed.
+   In case we assume that the energy difference E(J,Tau)-E(0,0) is small
+compared to the energy of the incoming electron, then the cross section 
+summed over all the Tau's (0->J) will become practically independent from
+the modulus of the Ac vectors provided they are mutually orthogonal.
+   In practice, when one is interested in calculating only the cross 
+sections for the 0->J transitions, the default values present in asym.f 
+(asympO3.f) can be used without any problem.
+
+
+6.2 Rotational efficiency.
+
+  With IPRINT=2 the value of the Rotational Efficiency (RE) will be printed. 
+RE is defined as
+
+          Sigma(0,0->J,Tau) * [E(J,Tau) - E(0,0)]
+          ---------------------------------------
+                        Sigma Tot
+
+and it depends on the numerical values assumed by the Ac and E(J,Tau) above.
+This quantity (not documented in the paper) is still under study, in
+particular for what concerns the convergency of the sum in J,Tau.
+Any of the calculated values of the RE, albeit correctly produced, must 
+therefore be taken with caution.
+
+
+6.3 The LINCROSS subroutine
+  This subroutine has been added only recently to the code in order to 
+facilitate the user to obtain, for each Irreducible Representation, 
+the relevant scattering parameters in terms of partial integral cross
+sections (CS) directly from the T-matrices.
+
+
+
+7. Memory storage requirements.
+-------------------------------
+
+   In the src/INCLUDE subdir, two sets of parameters are given one for
+linear molecule and one for all the other symmetries. As explained above,
+one can, at the compilation stage, select the system under study and this
+will have an impact on the memory allocation which the code will require 
+at run time.
+   In order to facilitate the use of the code, at the end of the compilation
+an estimate of the executable and data sizes are given. The exact memory
+occupancy depends on the particular architecture chosen and on the runtime
+environment present so this estimate can be taken as an upper limit.
+   In case one would create a new parameter set suitable to be used for
+linear and non-linear molecules, the estimate of the memory occupancy must
+be used to avoid memory shortage and machine swap at runtime. This is also true
+if one is interested in doing DCS calculations with very large values of
+Lmax (or Lbig) which require larger parameter thresholds.
+
