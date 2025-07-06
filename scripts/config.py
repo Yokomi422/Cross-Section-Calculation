@@ -4,73 +4,73 @@ from dataclasses import dataclass
 @dataclass
 class UKRmolConfig:
     """
-    Configuration related to config.pl
+    config.plに関連する設定
     """
 
     suffix: str = ""
     print_info = "file"
     add_files_to_backup: list[str] | None = None
 
-    # Running options
-    # Which codes will you run? Choose one or the other
+    # 実行オプション
+    # どのコードを実行しますか？どちらかを選択
     molpro: int = 1
     psi4: int = 0
-    # What type of calculation/process?
+    # どのタイプの計算/プロセス？
     scattering: int = 1  # run all programs, if you want to run target only, set to 0
     photoionization: int = (
-        0  # claculation photoionization cross sections of the (N+1)-electron system instead of electron scattering cross sections
+        0  # 電子散乱断面積の代わりに(N+1)電子系の光イオン化断面積を計算
     )
     rmt_interface: int = (
-        0  # from the RMT molecular input file (rmt_interface and photoionization are mutually exclusive options)
+        0  # RMT分子入力ファイルから(rmt_interfaceとphotoionizationは排他的オプション)
     )
-    # Ocassionally, you may want to turn these parts of the calculation too
-    skip_radden: int = 1  # skip calculating radian densities
-    # Options to keep or delete files
-    gather_data: int = 1  # gather eigenphase sums, cross section, enegies...
-    clean: int = 1  # removing fort* etc (except moints with molecuar integrals)
-    remove_moints: int = 1  # remove moints with molecular integrals
-    # Options to use existing input data
+    # 時々、計算のこれらの部分も有効にしたい場合があります
+    skip_radden: int = 1  # 径方密度の計算をスキップ
+    # ファイルを保持または削除するオプション
+    gather_data: int = 1  # 固有位相和、断面積、エネルギーなどを収集
+    clean: int = 1  # fort*などを削除（分子積分のmointを除く）
+    remove_moints: int = 1  # 分子積分のmointを削除
+    # 既存の入力データを使用するオプション
     use_templates: int = (
-        1  # set this to 0, if you need to modify generated inputs manually and than rerun everything
+        1  # 生成された入力を手動で修正してからすべてを再実行する必要がある場合は0に設定
     )
-    # but do not change the filesnames1
-    # MPI lancher options
+    # ただしファイル名は変更しないでください！
+    # MPIランチャーオプション
     mpi_integrals: str = (
-        ""  # MPI launcher command for scatci_integrals (e.g. mpirun -ilp64 -n 1)
+        ""  # scatci_integrals用MPIランチャーコマンド (例: mpirun -ilp64 -n 1)
     )
     mpi_scatci: str = (
-        ""  # MPI launcher command for mpi-sctci (e.g. "mpirun -np 32; if empty, legacy scatci will be used")
+        ""  # mpi-scatci用MPIランチャーコマンド (例: "mpirun -np 32"; 空の場合は旧式scatciを使用)
     )
     mpi_rsolve: str = (
-        ""  # MPI launcher command for mpi-rsolve (e.g. "mpirun -np 32; if empty, serial rsolve ill be used")
+        ""  # mpi-rsolve用MPIランチャーコマンド (例: "mpirun -np 32"; 空の場合は連続rsolveを使用)
     )
 
-    # Run-time options for SCATCI_INTEGRALS
+    # SCATCI_INTEGRALSの実行時オプション
     buffer_size: int = (
-        5000  # Size of temporary arrays for integral transformation in MiB
+        5000  # 積分変換用一時配列のサイズ(MiB単位)
     )
     delta_r1: float = (
-        0.25  # Length, in Bohr, of the elementary radial quadrature needed for evaluation of the mixed BTO/GTO integrals
+        0.25  # 混合BTO/GTO積分の評価に必要な基本径方求積の長さ（Bohr単位）
     )
     transform_alg: int = (
-        0  # Choice of the integral transformation algorithm: 0 = auto, 1 = sparse (optimal for BTO and mixed BTO/GTO continuum), other = dense
+        0  # 積分変換アルゴリズムの選択: 0=自動, 1=税密(BTOと混合BTO/GTO連続体に最適), その他=密
     )
-    # # The sparse transformation is not available in distributed (MPI) mode.
+    # # 税密変換は分散(MPI)モードでは利用できません。
 
-    # Saving options
-    # These are files that can be plotted
+    # 保存オプション
+    # これらはプロット可能なファイルです
     save_eigenph: int = (
-        1  # set 1 to copy fort.10XX into a file like eigenph.singlet.Ag (eigenphase sums)
+        1  # fort.10XXをeigenph.singlet.Agのようなファイルにコピーする場合は1に設定(固有位相和)
     )
     save_xsec: int = (
-        1  # set 1 to copy fort.12XX into a file like xsec.singlet.Ag (cross sections)
+        1  # fort.12XXをxsec.singlet.Agのようなファイルにコピーする場合は1に設定(断面積)
     )
-    # These are files that can be used to start an outer region calculation
+    # これらは外部領域計算を開始するために使用できるファイルです
     save_channels: int = (
-        0  # set 1 to copy fort.10XX into a file like eigenph.singlet.Ag (eigenphase sums)
+        0  # fort.10XXをeigenph.singlet.Agのようなファイルにコピーする場合は1に設定(固有位相和)
     )
     save_rmat_amp: int = (
-        0  # set 1 to copy fort.12XX into a file like xsec.singlet.Ag (cross sections)
+        0  # fort.12XXをxsec.singlet.Agのようなファイルにコピーする場合は1に設定(断面積)
     )
 
     save_Kmatrix: int = 0
@@ -95,7 +95,7 @@ class UKRmolConfig:
     dipelm_smooth: int = 0
 
     def _format(self, value) -> str:
-        """Format Python value into Perl format"""
+        """Python値をPerl形式にフォーマット"""
         if isinstance(value, str):
             return f'"{value}"'
         elif isinstance(value, (int, float)):
@@ -107,7 +107,7 @@ class UKRmolConfig:
             return str(value)
 
     def _comment(self, key: str) -> str | None:
-        """Add appropriate comment for each configuration key."""
+        """各設定キーに適切なコメントを追加"""
         comments = {
             "suffix": "# string added to model directory to distinguish different runs which have the same model\n                         # it can be useful e.g. if you run only target calculations etc.",
             "print_info": '# "screen" or "file" or "both" or "none" - option whether info messages will be printed on the screen or into files in the subdirectory logs',
@@ -154,7 +154,7 @@ class UKRmolConfig:
 
     def transform(self):
         """
-        Transform Python dataclass config to Perl config.
+        Pythonデータクラス設定をPerl設定に変換。
         """
         perl_lines = ["# Running and saving options", "", "%run = (", ""]
 
