@@ -1,5 +1,12 @@
 from dataclasses import dataclass
-from typing import List, Dict, Any
+from typing import List, Dict, Any, Optional
+try:
+    from ase import Atoms
+    from ase.build import molecule
+    from ase.data import atomic_numbers, chemical_symbols
+    ASE_AVAILABLE = True
+except ImportError:
+    ASE_AVAILABLE = False
 
 
 @dataclass
@@ -25,6 +32,12 @@ class UKRmolGeometry:
     # 直接原子指定
     atoms: List[List] | None = None
     
+    # ASE分子名での自動生成
+    molecule_name: Optional[str] = None
+    
+    # 希ガス原子の自動生成
+    noble_gas: Optional[str] = None
+    
     def __post_init__(self):
         if self.geometries is None:
             if self.atoms is not None:
@@ -37,8 +50,14 @@ class UKRmolGeometry:
                         'atoms': self.atoms
                     }
                 ]
-                self.suffix = f"   {atom_name}    "
-                self.geometry_labels = f"   {atom_name}  atom"
+                self.suffix = f".{atom_name}_atom"
+                self.geometry_labels = f"   {atom_name} atom   "
+            elif self.molecule_name is not None:
+                # ASE分子名から自動生成
+                self._generate_from_ase_molecule()
+            elif self.noble_gas is not None:
+                # 希ガス原子の自動生成
+                self._generate_noble_gas()
             else:
                 # デフォルト: 原点にNe原子
                 self.geometries = [
@@ -48,6 +67,68 @@ class UKRmolGeometry:
                         'atoms': [["Ne", 0.0, 0.0, 0.0]]
                     }
                 ]
+
+    def _generate_from_ase_molecule(self):
+        """ASE分子名から幾何学構造を自動生成"""
+        if not ASE_AVAILABLE:
+            raise ImportError("ASE is not available. Please install ASE to use molecule_name feature.")
+        
+        try:
+            mol = molecule(self.molecule_name)
+            symbols = mol.get_chemical_symbols()
+            positions = mol.get_positions()
+            
+            # 原子リストを作成
+            atoms_list = []
+            for symbol, pos in zip(symbols, positions):
+                atoms_list.append([symbol, float(pos[0]), float(pos[1]), float(pos[2])])
+            
+            # 分子の説明を作成
+            unique_symbols = list(set(symbols))
+            if len(unique_symbols) == 1:
+                desc = f"   {unique_symbols[0]}{len(symbols)} molecule  "
+            else:
+                desc = f"   {self.molecule_name} molecule  "
+            
+            self.geometries = [
+                {
+                    'description': desc,
+                    'gnuplot_desc': f"{self.molecule_name} molecule",
+                    'atoms': atoms_list
+                }
+            ]
+            self.suffix = f".{self.molecule_name}_molecule"
+            self.geometry_labels = f"   {self.molecule_name} molecule   "
+            
+        except Exception as e:
+            raise ValueError(f"Failed to generate molecule {self.molecule_name}: {e}")
+
+    def _generate_noble_gas(self):
+        """希ガス原子の幾何学構造を自動生成"""
+        noble_gases = ['He', 'Ne', 'Ar', 'Kr', 'Xe', 'Rn']
+        
+        if self.noble_gas not in noble_gases:
+            raise ValueError(f"Invalid noble gas: {self.noble_gas}. Valid options: {noble_gases}")
+        
+        self.geometries = [
+            {
+                'description': f"   {self.noble_gas} atom  ",
+                'gnuplot_desc': f"{self.noble_gas} atom",
+                'atoms': [[self.noble_gas, 0.0, 0.0, 0.0]]
+            }
+        ]
+        self.suffix = f".{self.noble_gas}_atom"
+        self.geometry_labels = f"   {self.noble_gas} atom   "
+
+    @classmethod
+    def from_molecule(cls, molecule_name: str, **kwargs):
+        """ASE分子名から幾何学構造を作成するクラスメソッド"""
+        return cls(molecule_name=molecule_name, **kwargs)
+    
+    @classmethod
+    def from_noble_gas(cls, noble_gas: str, **kwargs):
+        """希ガス原子から幾何学構造を作成するクラスメソッド"""
+        return cls(noble_gas=noble_gas, **kwargs)
 
     def _format(self, value) -> str:
         """Python値をPerl形式にフォーマット"""
@@ -142,14 +223,6 @@ class UKRmolGeometry:
             "                                         # if zero then codes will run for all geometries",
             ");",
             "",
-            "# Automatic geometry generation example",
-            "# Neon atom geometry - single atom at origin",
-            "push(@{$geometry{'geometries'}},",
-            "     { 'description', \"   Ne atom  \",",
-            "       'gnuplot_desc', \"Ne atom\",",
-            "       'atoms', [ [ \"Ne\", 0.0, 0.0, 0.0 ] ]",
-            "     }",
-            ");",
         ])
         
         return "\n".join(perl_lines)
@@ -178,3 +251,33 @@ if __name__ == "__main__":
     default_geometry = UKRmolGeometry()
     print("\nデフォルト（Ne原子）の設定:")
     print(default_geometry.transform())
+    
+    # ASE分子名から自動生成
+    print("\n" + "="*50)
+    print("ASE自動生成の例:")
+    
+    # 希ガス原子（クラスメソッド使用）
+    ar_geometry = UKRmolGeometry.from_noble_gas("Ar")
+    print("\nAr原子の設定:")
+    print(ar_geometry.transform())
+    
+    if ASE_AVAILABLE:
+        # H2分子（ASE使用）
+        h2_ase_geometry = UKRmolGeometry.from_molecule("H2")
+        print("\nH2分子（ASE）の設定:")
+        print(h2_ase_geometry.transform())
+        
+        # H2O分子（ASE使用）
+        h2o_geometry = UKRmolGeometry.from_molecule("H2O")
+        print("\nH2O分子（ASE）の設定:")
+        print(h2o_geometry.transform())
+        
+        # CO2分子（ASE使用）
+        try:
+            co2_geometry = UKRmolGeometry.from_molecule("CO2")
+            print("\nCO2分子（ASE）の設定:")
+            print(co2_geometry.transform())
+        except:
+            print("\nCO2分子は利用できません")
+    else:
+        print("\nASEが利用できません")

@@ -1,13 +1,13 @@
 from dataclasses import dataclass
-from typing import List, Dict, Any, Optional
+from typing import  Optional
 from pathlib import Path
-import os
 
 from model import UKRmolModel
 from config import UKRmolConfig
 from dirs import UKRmolDirs
 from geometry import UKRmolGeometry
 
+from ase.data import atomic_numbers
 
 @dataclass
 class UKRmolSetup:
@@ -18,7 +18,7 @@ class UKRmolSetup:
     
     # 基本設定
     molecule_name: str = "Ne"
-    atoms: List[List] = None
+    atoms: list[list] | None = None
     nelectrons: int = 10
     symmetry: str = "C1"
     
@@ -27,11 +27,13 @@ class UKRmolSetup:
     model_type: str = "CAS"
     scattering: bool = True
     photoionization: bool = False
+    max_energy_eV: float = 20.0  # 衝突断面積の最大エネルギー[eV]
     
     # 軌道設定
     nfrozen: int = 1
     nactive: int = 4
-    nvirtual: int = 3
+    nvirtual: int = 8  # デフォルト: 2 * nactive
+    nreference: int = 5  # デフォルト: nfrozen + nactive
     
     # 幾何学設定
     length_unit: int = 0  # 0 - atomic units, 1 - Angstroms
@@ -50,22 +52,31 @@ class UKRmolSetup:
         """初期化後の処理"""
         if self.atoms is None:
             # デフォルト原子設定
-            if self.molecule_name == "He":
-                self.atoms = [["He", 0.0, 0.0, 0.0]]
-                self.nelectrons = 2
-            elif self.molecule_name == "Ne":
-                self.atoms = [["Ne", 0.0, 0.0, 0.0]]
-                self.nelectrons = 10
-            elif self.molecule_name == "H":
-                self.atoms = [["H", 0.0, 0.0, 0.0]]
-                self.nelectrons = 1
-            else:
-                self.atoms = [[self.molecule_name, 0.0, 0.0, 0.0]]
+            self.atoms = [[self.molecule_name, 0.0, 0.0, 0.0]]
+        
+        # ASEを使って電子数を自動計算
+        if self.atoms:
+            total_electrons = 0
+            for atom in self.atoms:
+                symbol = atom[0]
+                total_electrons += atomic_numbers[symbol]
+            self.nelectrons = total_electrons
+        
+        # 軌道設定のデフォルト値を自動計算
+        # nreferenceとnvirtualは明示的に設定されていない場合のみ自動計算
+        if self.nreference == 5:  # デフォルト値の場合
+            self.nreference = self.nfrozen + self.nactive
+        if self.nvirtual == 8:  # デフォルト値の場合
+            self.nvirtual = 2 * self.nactive
     
     def create_model(self) -> UKRmolModel:
         """モデル設定を作成"""
         if self.custom_model is not None:
             return self.custom_model
+        
+        # nescat設定を自動計算（20eV/400の比率で計算）
+        nescat_value = int(self.max_energy_eV / 20.0 * 400)
+        nescat_str = f"20, {nescat_value}"
         
         return UKRmolModel(
             molecule=self.molecule_name,
@@ -77,8 +88,10 @@ class UKRmolSetup:
             nfrozen=self.nfrozen,
             nactive=self.nactive,
             nvirtual=self.nvirtual,
+            nreference=self.nreference,
             r_unit=self.length_unit,
-            directory=self.suffix
+            directory=self.suffix,
+            nescat=nescat_str
         )
     
     def create_config(self) -> UKRmolConfig:
@@ -110,7 +123,7 @@ class UKRmolSetup:
             suffix=f".{self.molecule_name}_{self.suffix}" if self.suffix else f".{self.molecule_name}"
         )
     
-    def generate_all_files(self, output_path: str = ".") -> Dict[str, str]:
+    def generate_all_files(self, output_path: str = ".") -> dict[str, str]:
         """すべての設定ファイルを生成"""
         model = self.create_model()
         config = self.create_config()
@@ -152,16 +165,9 @@ class UKRmolSetup:
 # 便利な関数
 def create_atom_setup(atom_symbol: str, **kwargs) -> UKRmolSetup:
     """原子計算用の設定を作成"""
-    electron_count = {
-        "H": 1, "He": 2, "Li": 3, "Be": 4, "B": 5, "C": 6, "N": 7, "O": 8,
-        "F": 9, "Ne": 10, "Na": 11, "Mg": 12, "Al": 13, "Si": 14, "P": 15,
-        "S": 16, "Cl": 17, "Ar": 18
-    }
-    
     return UKRmolSetup(
         molecule_name=atom_symbol,
         atoms=[[atom_symbol, 0.0, 0.0, 0.0]],
-        nelectrons=electron_count.get(atom_symbol, 1),
         **kwargs
     )
 
@@ -174,7 +180,6 @@ def create_h2_setup(bond_length: float = 1.4, **kwargs) -> UKRmolSetup:
             ["H", 0.0, 0.0, 0.0],
             ["H", 0.0, 0.0, bond_length]
         ],
-        nelectrons=2,
         symmetry="D2h",
         **kwargs
     )
@@ -188,7 +193,6 @@ def create_co_setup(bond_length: float = 2.13, **kwargs) -> UKRmolSetup:
             ["C", 0.0, 0.0, 0.0],
             ["O", 0.0, 0.0, bond_length]
         ],
-        nelectrons=14,
         symmetry="C2v",
         **kwargs
     )

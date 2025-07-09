@@ -114,9 +114,9 @@ class UKRmolModel:
         if self.atoms is None:
             self.atoms = ["Ne"]
         if self.frozen_orbs is None:
-            self.frozen_orbs = [1, 0, 0, 0, 0, 0, 0, 0]
+            self.frozen_orbs = [0, 0, 0, 0, 0, 0, 0, 0]
         if self.active_orbs is None:
-            self.active_orbs = [4, 0, 0, 0, 0, 0, 0, 0]
+            self.active_orbs = [0, 0, 0, 0, 0, 0, 0, 0]
         if self.virtual_orbs is None:
             self.virtual_orbs = [0, 0, 0, 0, 0, 0, 0, 0]
         if self.reference_orbs is None:
