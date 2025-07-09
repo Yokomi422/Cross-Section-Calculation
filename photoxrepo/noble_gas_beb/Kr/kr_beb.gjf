@@ -1,0 +1,10 @@
+%chk=kr_beb.chk
+%mem=8GB
+%nproc=4
+#p B3LYP/aug-cc-pVTZ IOp(3/33=1,6/80=1) SCF=Tight Pop=Full
+
+Kr atom BEB calculation with kinetic energies
+
+0 1
+Kr 0.0 0.0 0.0
+

@@ -1,0 +1,9 @@
+%chk=ne_beb.chk
+%mem=4GB
+%nproc=4
+#p B3LYP/aug-cc-pVTZ IOp(3/33=1,6/80=) SCF=Tight Pop=Full
+
+Ne atom BEB calculation with kinetic energies
+
+0 1
+Ne 0.0 0.0 0.0

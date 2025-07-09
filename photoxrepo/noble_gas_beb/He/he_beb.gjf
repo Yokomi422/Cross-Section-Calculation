@@ -1,0 +1,10 @@
+%chk=he_beb_new.chk
+%mem=4GB
+%nproc=4
+#p B3LYP/aug-cc-pVTZ IOp(3/33=1,6/80=1) Pop=Full
+
+He atom BEB calculation with orbital kinetic energies
+
+0 1
+He 0.0 0.0 0.0
+

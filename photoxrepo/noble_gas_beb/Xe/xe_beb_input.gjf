@@ -1,0 +1,9 @@
+%chk=xe_beb.chk
+%mem=8GB
+%nproc=4
+#p B3LYP/aug-cc-pVTZ-PP IOp(6/80=1) SCF=Tight
+
+Xe atom BEB calculation with kinetic energies
+
+0 1
+Xe 0.0 0.0 0.0

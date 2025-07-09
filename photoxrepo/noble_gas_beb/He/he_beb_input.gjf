@@ -1,0 +1,9 @@
+%chk=he_beb.chk
+%mem=4GB
+%nproc=4
+#p B3LYP/aug-cc-pVTZ IOp(6/80=1) SCF=Tight
+
+He atom BEB calculation with kinetic energies
+
+0 1
+He 0.0 0.0 0.0
